@@ -3,10 +3,20 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C052AF525964FD300BB0359 /* FigmaAssetsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C052AF425964FD300BB0359 /* FigmaAssetsFetch.swift */; };
+		4C052AF8259659AF00BB0359 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C052AF7259659AF00BB0359 /* Colors.swift */; };
+		4C052AFB25965E7400BB0359 /* Options.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C052AFA25965E7400BB0359 /* Options.swift */; };
+		4C598F9524616E67001234F4 /* FigmaAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C598F9424616E67001234F4 /* FigmaAPI.swift */; };
+		4C598F9724617A30001234F4 /* PaletteExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C598F9624617A30001234F4 /* PaletteExtractor.swift */; };
+		4C598F9A246188E3001234F4 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C598F99246188E3001234F4 /* StringExtensions.swift */; };
+		4C598F9D2461A053001234F4 /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 4C598F9C2461A053001234F4 /* Stencil */; };
+		4C5A28D1246080E600336DC1 /* FigmaTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5A28D0246080E600336DC1 /* FigmaTypes.swift */; };
+		4C5A28DA2460A8B500336DC1 /* ColorObjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5A28D92460A8B500336DC1 /* ColorObjectModel.swift */; };
+		4CA756A7259612FC00776366 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 4CA756A6259612FC00776366 /* ArgumentParser */; };
 		4CCA373A245DB4B9001A627C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCA3739245DB4B9001A627C /* main.swift */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +33,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4C052AF425964FD300BB0359 /* FigmaAssetsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FigmaAssetsFetch.swift; sourceTree = "<group>"; };
+		4C052AF7259659AF00BB0359 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		4C052AFA25965E7400BB0359 /* Options.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Options.swift; sourceTree = "<group>"; };
+		4C39012A259A72BD0023AD64 /* Colors.swift.stencil */ = {isa = PBXFileReference; lastKnownFileType = text; path = Colors.swift.stencil; sourceTree = "<group>"; };
+		4C598F9424616E67001234F4 /* FigmaAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FigmaAPI.swift; sourceTree = "<group>"; };
+		4C598F9624617A30001234F4 /* PaletteExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteExtractor.swift; sourceTree = "<group>"; };
+		4C598F99246188E3001234F4 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		4C5A28D0246080E600336DC1 /* FigmaTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FigmaTypes.swift; sourceTree = "<group>"; };
+		4C5A28D92460A8B500336DC1 /* ColorObjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorObjectModel.swift; sourceTree = "<group>"; };
 		4CCA3736245DB4B9001A627C /* FigmaAssetsFetch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FigmaAssetsFetch; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CCA3739245DB4B9001A627C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -32,12 +51,58 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CA756A7259612FC00776366 /* ArgumentParser in Frameworks */,
+				4C598F9D2461A053001234F4 /* Stencil in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C052AF225964B9B00BB0359 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				4C052AF325964EA000BB0359 /* CommandLineArguments */,
+				4CCA3739245DB4B9001A627C /* main.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		4C052AF325964EA000BB0359 /* CommandLineArguments */ = {
+			isa = PBXGroup;
+			children = (
+				4C052AF425964FD300BB0359 /* FigmaAssetsFetch.swift */,
+				4C052AF7259659AF00BB0359 /* Colors.swift */,
+				4C052AFA25965E7400BB0359 /* Options.swift */,
+			);
+			path = CommandLineArguments;
+			sourceTree = "<group>";
+		};
+		4C598F9324616CEC001234F4 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				4C598F9424616E67001234F4 /* FigmaAPI.swift */,
+				4C598F9624617A30001234F4 /* PaletteExtractor.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		4C598F98246188BF001234F4 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				4C598F99246188E3001234F4 /* StringExtensions.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		4C598F9E2461A307001234F4 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				4C39012A259A72BD0023AD64 /* Colors.swift.stencil */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
 		4CCA372D245DB4B9001A627C = {
 			isa = PBXGroup;
 			children = (
@@ -57,9 +122,22 @@
 		4CCA3738245DB4B9001A627C /* FigmaAssetsFetch */ = {
 			isa = PBXGroup;
 			children = (
-				4CCA3739245DB4B9001A627C /* main.swift */,
+				4C052AF225964B9B00BB0359 /* Application */,
+				4C598F9E2461A307001234F4 /* Templates */,
+				4C598F98246188BF001234F4 /* Helpers */,
+				4C598F9324616CEC001234F4 /* Services */,
+				4CCA3742245DED07001A627C /* Models */,
 			);
 			path = FigmaAssetsFetch;
+			sourceTree = "<group>";
+		};
+		4CCA3742245DED07001A627C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4C5A28D0246080E600336DC1 /* FigmaTypes.swift */,
+				4C5A28D92460A8B500336DC1 /* ColorObjectModel.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -78,6 +156,10 @@
 			dependencies = (
 			);
 			name = FigmaAssetsFetch;
+			packageProductDependencies = (
+				4C598F9C2461A053001234F4 /* Stencil */,
+				4CA756A6259612FC00776366 /* ArgumentParser */,
+			);
 			productName = FigmaAssetsFetch;
 			productReference = 4CCA3736245DB4B9001A627C /* FigmaAssetsFetch */;
 			productType = "com.apple.product-type.tool";
@@ -89,7 +171,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1140;
-				LastUpgradeCheck = 1140;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "Michael Ovchinnikov";
 				TargetAttributes = {
 					4CCA3735245DB4B9001A627C = {
@@ -106,6 +188,10 @@
 				Base,
 			);
 			mainGroup = 4CCA372D245DB4B9001A627C;
+			packageReferences = (
+				4C598F9B2461A053001234F4 /* XCRemoteSwiftPackageReference "Stencil" */,
+				4CA756A5259612FC00776366 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+			);
 			productRefGroup = 4CCA3737245DB4B9001A627C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -120,7 +206,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C598F9A246188E3001234F4 /* StringExtensions.swift in Sources */,
+				4C052AF525964FD300BB0359 /* FigmaAssetsFetch.swift in Sources */,
+				4C5A28D1246080E600336DC1 /* FigmaTypes.swift in Sources */,
 				4CCA373A245DB4B9001A627C /* main.swift in Sources */,
+				4C052AFB25965E7400BB0359 /* Options.swift in Sources */,
+				4C052AF8259659AF00BB0359 /* Colors.swift in Sources */,
+				4C5A28DA2460A8B500336DC1 /* ColorObjectModel.swift in Sources */,
+				4C598F9524616E67001234F4 /* FigmaAPI.swift in Sources */,
+				4C598F9724617A30001234F4 /* PaletteExtractor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +247,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -213,6 +308,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -243,6 +339,7 @@
 		4CCA373E245DB4B9001A627C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S88YFAW48T;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -254,6 +351,7 @@
 		4CCA373F245DB4B9001A627C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S88YFAW48T;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -284,6 +382,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4C598F9B2461A053001234F4 /* XCRemoteSwiftPackageReference "Stencil" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stencilproject/Stencil.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.13.1;
+			};
+		};
+		4CA756A5259612FC00776366 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4C598F9C2461A053001234F4 /* Stencil */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4C598F9B2461A053001234F4 /* XCRemoteSwiftPackageReference "Stencil" */;
+			productName = Stencil;
+		};
+		4CA756A6259612FC00776366 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4CA756A5259612FC00776366 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4CCA372E245DB4B9001A627C /* Project object */;
 }
