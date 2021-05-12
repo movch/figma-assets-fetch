@@ -2,20 +2,14 @@ import Combine
 import Foundation
 
 enum PaletteExtractorError: Error {
-    case canvasReadError
     case colorsFrameReadError
-    case colorsFrameChildrenReadError
 }
 
 extension PaletteExtractorError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .canvasReadError:
-            return "Unable to read document canvas"
         case .colorsFrameReadError:
             return "Unable to find document 'Colors' frame"
-        case .colorsFrameChildrenReadError:
-            return "Unable to find 'Colors frame children"
         }
     }
 }
@@ -25,10 +19,10 @@ protocol PaletteExtractorType {
 }
 
 class PaletteExtractor {
-    private var figmaFile: FileResponse
+    private var figmaNodes: FileNodesResponse
     
-    init(figmaFile: FileResponse) {
-        self.figmaFile = figmaFile
+    init(figmaNodes: FileNodesResponse) {
+        self.figmaNodes = figmaNodes
     }
     
     private func findEllipses(in root: [Document]) -> [Document] {
@@ -53,7 +47,8 @@ class PaletteExtractor {
             let styleName = styles[styleId]?.name,
             let color = ellipse.fills?.first?.color
         else {
-            print("Failed to parse ellipse: \(ellipse.id) \(ellipse.name) \(String(describing: ellipse.fills?.first?.color))")
+            let ellipseColor = ellipse.fills?.first?.color?.toHex() ?? "N/A"
+            print("Failed to parse ellipse: \(ellipse.id) \(ellipse.name) \(ellipseColor)")
             return nil
         }
         
@@ -75,20 +70,14 @@ class PaletteExtractor {
 
 extension PaletteExtractor: PaletteExtractorType {
     func extract() throws -> [ColorObjectModel] {
-        let document = figmaFile.document
-        
-        guard let canvas = document.children.first(where: { $0.type == .canvas }) else {
-            throw PaletteExtractorError.canvasReadError
-        }
-        guard let colorsFrame = canvas.children?.first(where: { $0.name == "Colors" }) else {
+        guard let colorsNode = figmaNodes.nodes.first?.value else {
             throw PaletteExtractorError.colorsFrameReadError
         }
-        guard let colorsFrameChildren = colorsFrame.children else {
-            throw PaletteExtractorError.colorsFrameChildrenReadError
-        }
+        
+        let colorsFrameChildren = colorsNode.document.children
         
         let ellipses = findEllipses(in: colorsFrameChildren)
-        let styles = figmaFile.styles
+        let styles = colorsNode.styles
         let paletteColors: [ColorObjectModel] = ellipses.compactMap { ellipse in
             process(ellipse, with: styles)
         }

@@ -18,6 +18,11 @@ struct Colors: ParsableCommand {
     var figmaFileId: String = ""
     
     @Option(
+        help: "Figma file node identifier that contains the collections of ellipses with colors. The node Id can be parsed from any Figma node url"
+    )
+    var colorsNodeId: String = ""
+    
+    @Option(
         help: "Template file name to render."
     )
     var templateName: String = ""
@@ -30,8 +35,8 @@ struct Colors: ParsableCommand {
     func run() {
         let figmaAPI: FigmaAPIType = FigmaAPI(token: options.figmaToken)
 
-        let cancellable = figmaAPI.requestFile(with: figmaFileId)
-            .tryMap(render(figmaFile:))
+        let cancellable = figmaAPI.requestFile(with: figmaFileId, nodeId: colorsNodeId)
+            .tryMap(render(figmaNodes:))
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
@@ -65,8 +70,8 @@ struct Colors: ParsableCommand {
         withExtendedLifetime(cancellable) {}
     }
     
-    private func render(figmaFile: FileResponse) throws -> String {
-        let paletteExtractor = PaletteExtractor(figmaFile: figmaFile)
+    private func render(figmaNodes: FileNodesResponse) throws -> String {
+        let paletteExtractor = PaletteExtractor(figmaNodes: figmaNodes)
         let paletteColors = try paletteExtractor.extract()
 
         let context = ["colors": paletteColors]

@@ -6,7 +6,7 @@ enum FigmaAPIError: LocalizedError {
 }
 
 protocol FigmaAPIType {
-    func requestFile(with id: String) -> AnyPublisher<FileResponse, Error>
+    func requestFile(with id: String, nodeId: String) -> AnyPublisher<FileNodesResponse, Error>
 }
 
 class FigmaAPI {
@@ -20,10 +20,10 @@ class FigmaAPI {
 }
 
 extension FigmaAPI: FigmaAPIType {
-    func requestFile(with id: String) -> AnyPublisher<FileResponse, Error> {
-        let filePath = "\(baseAPIPath)/files/\(id)"
+    func requestFile(with id: String, nodeId: String) -> AnyPublisher<FileNodesResponse, Error> {
+        let path = "\(baseAPIPath)/files/\(id)/nodes?ids=\(nodeId)"
 
-        guard let url = URL(string: filePath) else {
+        guard let url = URL(string: path) else {
             return Fail(error: FigmaAPIError.invalidFileURL).eraseToAnyPublisher()
         }
 
@@ -32,8 +32,8 @@ extension FigmaAPI: FigmaAPIType {
 
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { $0 as Error }
-            .map { $0.data }
-            .decode(type: FileResponse.self, decoder: JSONDecoder())
+            .map { return $0.data }
+            .decode(type: FileNodesResponse.self, decoder: JSONDecoder())
             .eraseToAnyPublisher()
     }
 }

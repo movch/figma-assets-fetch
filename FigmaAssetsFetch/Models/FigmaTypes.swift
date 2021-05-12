@@ -38,6 +38,17 @@ public struct FileResponse: Codable {
     public let styles: [String: Style]
 }
 
+/// GET /v1/files/:key/nodes
+///
+/// > Description
+///
+/// Returns the nodes referenced to by :ids as a JSON object. The nodes are retrieved from the Figma file referenced to by :key.
+///
+public struct FileNodesResponse: Codable {
+    public let nodes: [String: FileResponse]
+    public let name: String
+}
+
 // MARK: - Style
 
 public struct Style: Codable {
