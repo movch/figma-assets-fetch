@@ -46,6 +46,31 @@ class PaletteExtractor {
         
         return result
     }
+    
+    private func process(_ ellipse: Document, with styles: [String: Style]) -> ColorObjectModel? {
+        guard
+            let styleId = ellipse.styles?["fill"],
+            let styleName = styles[styleId]?.name,
+            let color = ellipse.fills?.first?.color
+        else {
+            print("Failed to parse ellipse: \(ellipse.id) \(ellipse.name) \(String(describing: ellipse.fills?.first?.color))")
+            return nil
+        }
+        
+        var paletteColor = ColorObjectModel(
+            name: styleName,
+            camelCaseName: styleName.camelCased,
+            hexColor: color.toHex(),
+            figmaColor: color
+        )
+        
+        // if opacity of ellipse was set we need to take it
+        if let opacity = ellipse.fills?.first?.opacity {
+            paletteColor.figmaColor.a = opacity
+        }
+        
+        return paletteColor
+    }
 }
 
 extension PaletteExtractor: PaletteExtractorType {
@@ -65,27 +90,7 @@ extension PaletteExtractor: PaletteExtractorType {
         let ellipses = findEllipses(in: colorsFrameChildren)
         let styles = figmaFile.styles
         let paletteColors: [ColorObjectModel] = ellipses.compactMap { ellipse in
-            guard
-                let styleId = ellipse.styles?["fill"],
-                let styleName = styles[styleId]?.name,
-                let color = ellipse.fills?.first?.color
-            else {
-                return nil
-            }
-            
-            var paletteColor = ColorObjectModel(
-                name: styleName,
-                camelCaseName: styleName.camelCased,
-                hexColor: color.toHex(),
-                figmaColor: color
-            )
-            
-            // if opacity of ellipse was set we need to take it
-            if let opacity = ellipse.fills?.first?.opacity {
-                paletteColor.figmaColor.a = opacity
-            }
-            
-            return paletteColor
+            process(ellipse, with: styles)
         }
         
         return paletteColors
