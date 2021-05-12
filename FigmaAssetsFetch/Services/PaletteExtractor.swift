@@ -42,16 +42,17 @@ class PaletteExtractor {
     }
     
     private func process(_ ellipse: Document, with styles: [String: Style]) -> ColorObjectModel? {
-        guard
-            let styleId = ellipse.styles?["fill"],
-            let styleName = styles[styleId]?.name,
-            let color = ellipse.fills?.first?.color
-        else {
-            let ellipseColor = ellipse.fills?.first?.color?.toHex() ?? "N/A"
-            print("Failed to parse ellipse: \(ellipse.id) \(ellipse.name) \(ellipseColor)")
+        guard let color = ellipse.fills?.first?.color else {
+            print("Failed to parse ellipse: \(ellipse.id) \(ellipse.name)")
             return nil
         }
         
+        var styleName = ellipse.name
+        if let styleId = ellipse.styles?["fill"],
+           let styleTitle = styles[styleId]?.name{
+            styleName = styleTitle
+        }
+
         var paletteColor = ColorObjectModel(
             name: styleName,
             camelCaseName: styleName.camelCased,
