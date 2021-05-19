@@ -22,4 +22,12 @@ extension String {
             .joined()
             .lowercasedFirstLetter
     }
+
+    var snackCased: String {
+        return self
+            .stripped
+            .components(separatedBy: .whitespaces)
+            .joined(separator: "_")
+            .lowercasedFirstLetter
+    }
 }

@@ -150,6 +150,10 @@ public struct FigmaColor: Codable {
     public func toHex() -> String {
         return String(format: "%02lX%02lX%02lX", lround(r * 255), lround(g * 255), lround(b * 255))
     }
+
+    public func toFullHex() -> String {
+        return String(format: "%02lX%02lX%02lX%02lX", lround(a * 255), lround(r * 255), lround(g * 255), lround(b * 255))
+    }
 }
 
 /// How this node blends with nodes behind it in the scene
