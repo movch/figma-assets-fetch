@@ -23,7 +23,7 @@ extension String {
             .lowercasedFirstLetter
     }
 
-    var snackCased: String {
+    var snakeCased: String {
         return self
             .stripped
             .components(separatedBy: .whitespaces)

@@ -56,7 +56,7 @@ class PaletteExtractor {
         var paletteColor = ColorObjectModel(
             name: styleName,
             camelCaseName: styleName.camelCased,
-            snackCaseName: styleName.snackCased,
+            snakeCaseName: styleName.snakeCased,
             hexColor: color.toHex(),
             fullHexColor: color.toFullHex(),
             figmaColor: color
