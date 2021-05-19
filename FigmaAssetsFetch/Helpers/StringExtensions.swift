@@ -22,4 +22,13 @@ extension String {
             .joined()
             .lowercasedFirstLetter
     }
+
+    var snakeCased: String {
+        return self
+            .stripped
+            .components(separatedBy: .whitespaces)
+            .map { $0.lowercased()  }
+            .joined(separator: "_")
+            .lowercasedFirstLetter
+    }
 }

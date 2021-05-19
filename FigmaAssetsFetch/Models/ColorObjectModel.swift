@@ -6,9 +6,15 @@ struct ColorObjectModel {
     
     /// `name` converted to camel case
     let camelCaseName: String
-    
+
+    /// `name` converted to snake case
+    let snakeCaseName: String
+
     /// Hex value of color
     let hexColor: String
+
+    /// Hex value with alpha of color
+    let fullHexColor: String
     
     /// RGBA value of color
     var figmaColor: FigmaColor
