@@ -27,8 +27,8 @@ extension String {
         return self
             .stripped
             .components(separatedBy: .whitespaces)
-            .map { $0.lowercased()  }
+            .filter { !$0.isEmpty }
+            .map { $0.lowercasedFirstLetter  }
             .joined(separator: "_")
-            .lowercasedFirstLetter
     }
 }
