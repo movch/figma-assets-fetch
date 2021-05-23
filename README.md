@@ -1,45 +1,26 @@
-# Figma Assets Fetch
+# figma-assets-fetch
 
 A macOS command-line utility for template-based code generation from Figma assets. Unlike other similar utilities it follows the *conventions-over-configurations* principle, which requires less effort in development and usage.
 
 ## What can it do?
+It can obtain color information from the specially prepared frame in any Figma document and render it to provided code template.
 
-It can obtain colors information from the specially prepared frame in Figma document and render it to provided code template.
-
-## How it works?
+## Getting Started
 
 ### Figma part
-
-**Conventions**:
-
-1. Your Figma document should contain frame called `Colors`;
-1. This frame should contain the ellipses filled with every color from your design theme;
-1. Every color should have a style with some name (colors without styles will be ignored by script);
-1. You can use whitespaces in your color style name any other symbols will be ignored.
+1. Prepare your color palette in a separate frame in your Figma file. It should contain a certain number of ellipses, each of which must be filled with the appropriate color. See the [example file](https://www.figma.com/file/lzXbn6LsYv5kesGqDcsOAl/FigmaAssetsFetch-Palette-Example?node-id=0%3A1).  
+![Figma palette example](img/figma-palette-example.png)
+1. Every color you use in your palette should have a style with some name. Alternatively you can set the name of the ellipse filled with that color (if the style is not set, the utility will parse color name from the ellipse name).  
+![Creating style name in Figma](img/creating-style-name-in-figma.png)
 
 ### Template part
-
-We use (Stencil)[https://github.com/stencilproject/Stencil] as template engine, so any Stencil-compatible markup will be valid. All colors obtained from Figma, are being passed to template as array of objects. Every object looks like this:
-
-    struct ColorObjectModel {
-        /// Name that was imported from Figma as is
-        let name: String
-        
-        /// `name` converted to camel case
-        let camelCaseName: String
-        
-        /// Hex value of color
-        let hexColor: String
-        
-        /// RGBA value of color
-        var figmaColor: FigmaColor
-    }
+ The template file is just a [Stencil](https://github.com/stencilproject/Stencil) template. All colors obtained from Figma, are being passed to template as an array of objects. Refer to [ColorObjectModel](https://github.com/movch/figma-asset-fetch/blob/main/FigmaAssetsFetch/Models/ColorObjectModel.swift) to gain understanding about such objects content.
 
 Example template:
 
     import UIKit
 
-    enum Color: Int {
+    enum Color {
     {% for color in colors %}
         case {{ color.camelCaseName }}
     {% endfor %}
@@ -48,14 +29,18 @@ Example template:
             switch color {
             {% for color in colors %}
             case .{{ color.camelCaseName }}:
-                return UIColor(red: {{ color.figmaColor.r }}, green: {{ color.figmaColor.g }}, blue: {{ color.figmaColor.b }}, alpha: {{ color.figmaColor.a }})
+                return UIColor(
+                    red: {{ color.figmaColor.r }}, 
+                    green: {{ color.figmaColor.g }}, 
+                    blue: {{ color.figmaColor.b }}, 
+                    alpha: {{ color.figmaColor.a }}
+                )
             {% endfor %}
             }
         }
     }
 
-### Command line utility part
-
+### Command line part
 To run the utility you need to pass several parameters, please refer to example below:
 
     figma-assets-fetch \
@@ -64,8 +49,20 @@ To run the utility you need to pass several parameters, please refer to example 
         --templates-directory "$TEMPLATES_DIR" \ #Path to directory with Stencil templates
         --figma-file-id $FIGMA_FILE_ID \ #File identifier of your Figma document, can be extracted from the URL
         --template-name Colors.swift.stencil \ #File name of the Stencil template to use
+        --colors-node-id $FIGMA_COLOR_NODE \ #Figma frame node id that contains color palete, can be obtained from Figma frame url
         --output "$OUT_FILE_PATH" #Where to save generated file
 
-## Building
+#### Where to get `figma-token`
+Obtain the access token on the Figma account settings page.
 
-The utility was written in Swift for macOS. Just clone the repository and build it with the latest version of Xcode.
+![](img/figma-personal-access-token.png)
+
+#### Where to get `figma-file-id`
+It can be parsed from the Figma file URL. For example, your Figma file URL is `https://www.figma.com/file/lzXbn6LsYv5kesGqDcsOAl/FigmaAssetsFetch-Palette-Example?node-id=0%3A1` then `figma-file-id` will be `lzXbn6LsYv5kesGqDcsOAl`.
+
+#### Where to get `colors-node-id`
+It can be parsed from the Figma file URL. For example, your Figma file URL is `https://www.figma.com/file/lzXbn6LsYv5kesGqDcsOAl/FigmaAssetsFetch-Palette-Example?node-id=0%3A1` then `colors-node-id` will be `0:1` (this is a decoded version of the URL encoded `0%3A1` string, you can use any [online decoder/encoder](https://meyerweb.com/eric/tools/dencoder/) to get it).
+
+
+## Building
+The utility is written in Swift for macOS. Just clone the repository and build the project with the latest version of Xcode.
