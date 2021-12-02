@@ -41,7 +41,7 @@ struct Colors: ParsableCommand {
                 receiveCompletion: { completion in
                     switch completion {
                     case let .failure(error):
-                        print(error.localizedDescription)
+                        print(error)
                         Darwin.exit(1)
                     case .finished:
                         Darwin.exit(0)
@@ -60,7 +60,7 @@ struct Colors: ParsableCommand {
                             encoding: String.Encoding.utf8
                         )
                     } catch let error {
-                        print(error.localizedDescription)
+                        print(error)
                     }
                 }
             )

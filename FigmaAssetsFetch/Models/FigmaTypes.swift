@@ -28,10 +28,6 @@ import Foundation
 /// key String
 /// File to export JSON from
 public struct FileResponse: Codable {
-    /// A mapping from node IDs to component metadata. This is to help you determine which
-    /// components each instance comes from. Currently the only piece of metadata available on
-    /// components is the name of the component, but more properties will be forthcoming.
-    public let components: [String: Component]
     /// The root node within the document
     public let document: DocumentClass
     public let schemaVersion: Double
