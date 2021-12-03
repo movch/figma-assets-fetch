@@ -14,7 +14,7 @@ struct ColorObjectModel {
     let hexColor: String
 
     /// Hex value with alpha of color
-    let fullHexColor: String
+    var fullHexColor: String
     
     /// RGBA value of color
     var figmaColor: FigmaColor

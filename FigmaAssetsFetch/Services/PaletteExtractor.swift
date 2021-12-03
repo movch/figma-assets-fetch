@@ -65,6 +65,7 @@ class PaletteExtractor {
         // if opacity of ellipse was set we need to take it
         if let opacity = ellipse.fills?.first?.opacity {
             paletteColor.figmaColor.a = opacity
+            paletteColor.fullHexColor = paletteColor.figmaColor.toFullHex()
         }
         
         return paletteColor
