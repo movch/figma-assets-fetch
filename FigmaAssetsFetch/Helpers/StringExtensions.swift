@@ -10,8 +10,11 @@ extension String {
     }
 
     var stripped: String {
-        let okayChars = Set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890 ")
-        return filter { okayChars.contains($0) }
+        return replacingOccurrences(
+            of: "[^\\w]",
+            with: " ",
+            options: .regularExpression
+        )
     }
     
     var camelCased: String {
