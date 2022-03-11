@@ -73,6 +73,7 @@ struct Colors: ParsableCommand {
     private func render(figmaNodes: FileNodesResponse) throws -> String {
         let paletteExtractor = PaletteExtractor(figmaNodes: figmaNodes)
         let paletteColors = try paletteExtractor.extract()
+            .sorted(by: { first, second in first.name < second.name })
 
         let context = ["colors": paletteColors]
         let environment = Environment(
