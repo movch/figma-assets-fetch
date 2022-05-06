@@ -13,7 +13,7 @@
 		4C052AF8259659AF00BB0359 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C052AF7259659AF00BB0359 /* Colors.swift */; };
 		4C052AFB25965E7400BB0359 /* Options.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C052AFA25965E7400BB0359 /* Options.swift */; };
 		4C598F9524616E67001234F4 /* FigmaAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C598F9424616E67001234F4 /* FigmaAPI.swift */; };
-		4C598F9724617A30001234F4 /* PaletteExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C598F9624617A30001234F4 /* PaletteExtractor.swift */; };
+		4C598F9724617A30001234F4 /* FigmaPaletteParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C598F9624617A30001234F4 /* FigmaPaletteParser.swift */; };
 		4C598F9A246188E3001234F4 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C598F99246188E3001234F4 /* StringExtensions.swift */; };
 		4C598F9D2461A053001234F4 /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 4C598F9C2461A053001234F4 /* Stencil */; };
 		4C5A28D1246080E600336DC1 /* FigmaTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5A28D0246080E600336DC1 /* FigmaTypes.swift */; };
@@ -43,7 +43,7 @@
 		4C052AFA25965E7400BB0359 /* Options.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Options.swift; sourceTree = "<group>"; };
 		4C39012A259A72BD0023AD64 /* Colors.swift.stencil */ = {isa = PBXFileReference; lastKnownFileType = text; path = Colors.swift.stencil; sourceTree = "<group>"; };
 		4C598F9424616E67001234F4 /* FigmaAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FigmaAPI.swift; sourceTree = "<group>"; };
-		4C598F9624617A30001234F4 /* PaletteExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteExtractor.swift; sourceTree = "<group>"; };
+		4C598F9624617A30001234F4 /* FigmaPaletteParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FigmaPaletteParser.swift; sourceTree = "<group>"; };
 		4C598F99246188E3001234F4 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		4C5A28D0246080E600336DC1 /* FigmaTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FigmaTypes.swift; sourceTree = "<group>"; };
 		4C5A28D92460A8B500336DC1 /* ColorObjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorObjectModel.swift; sourceTree = "<group>"; };
@@ -89,7 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				4C598F9424616E67001234F4 /* FigmaAPI.swift */,
-				4C598F9624617A30001234F4 /* PaletteExtractor.swift */,
+				4C598F9624617A30001234F4 /* FigmaPaletteParser.swift */,
 				4C015D5B2820419E00FEF4C5 /* XCColorSetGenerator.swift */,
 			);
 			path = Services;
@@ -225,7 +225,7 @@
 				4C052AF8259659AF00BB0359 /* Colors.swift in Sources */,
 				4C5A28DA2460A8B500336DC1 /* ColorObjectModel.swift in Sources */,
 				4C598F9524616E67001234F4 /* FigmaAPI.swift in Sources */,
-				4C598F9724617A30001234F4 /* PaletteExtractor.swift in Sources */,
+				4C598F9724617A30001234F4 /* FigmaPaletteParser.swift in Sources */,
 				4CB3588C28214B26008D43F9 /* XCAssets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

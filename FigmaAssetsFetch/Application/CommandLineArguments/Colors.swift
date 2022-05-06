@@ -18,7 +18,7 @@ struct Colors: ParsableCommand {
     var figmaFileId: String = ""
     
     @Option(
-        help: "Figma file node identifier that contains the collections of ellipses with colors. The node Id can be parsed from any Figma node url"
+        help: "Figma node identifier that contains a collection of ellipses with colors. Node Id can be parsed from the Figma node url."
     )
     var colorsNodeId: String = ""
     
@@ -28,9 +28,9 @@ struct Colors: ParsableCommand {
     var templateName: String = ""
     
     @Option(
-        help: "A path to file for generated code"
+        help: "Templates directory path."
     )
-    var output: String = ""
+    var templatesDirectory: String = ""
     
     func run() {
         let figmaAPI: FigmaAPIType = FigmaAPI(token: options.figmaToken)
@@ -48,7 +48,7 @@ struct Colors: ParsableCommand {
                     }
                 },
                 receiveValue: { rendered in
-                    guard let output = URL(string: "file://\(output)") else {
+                    guard let output = URL(string: "file://\(options.output)") else {
                         print(rendered)
                         Darwin.exit(0)
                     }
@@ -71,7 +71,7 @@ struct Colors: ParsableCommand {
     }
     
     private func render(figmaNodes: FileNodesResponse) throws -> String {
-        let paletteExtractor = PaletteExtractor(figmaNodes: figmaNodes)
+        let paletteExtractor = FigmaPaletteParser(figmaNodes: figmaNodes)
         let paletteColors = try paletteExtractor.extract()
             .sorted(by: { first, second in first.name < second.name })
 
@@ -79,7 +79,7 @@ struct Colors: ParsableCommand {
         let environment = Environment(
             loader: FileSystemLoader(
                 paths: [
-                    Path(options.templatesDirectory)
+                    Path(templatesDirectory)
                 ]
             )
         )

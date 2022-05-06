@@ -17,24 +17,19 @@ struct XCAssets: ParsableCommand {
     var figmaFileId: String = ""
     
     @Option(
-        help: "Figma file node identifier that contains the collections of ellipses with colors. The node Id can be parsed from any Figma node url"
+        help: "Figma file node identifier that contains a collection of ellipses with colors. Node Id can be parsed from the Figma node url"
     )
     var colorsNodeId: String = ""
     
     @Option(
-        help: "Figma file node identifier that contains the collections of ellipses with colors. The node Id can be parsed from any Figma node url"
+        help: "Figma node identifier that contains a collection of ellipses with dark colors. Node Id can be parsed from the Figma node url. If not provided dark colors would not be generated."
     )
     var darkColorsNodeId: String?
     
     @Option(
-        help: "Figma file identifier with dark colors. Can be extracted from the URL of your Figma document."
+        help: "Figma file identifier with dark colors. Can be extracted from the URL of your Figma document. If not provided it will be taken from `figma-file-id` parameter."
     )
     var darkColorsFigmaFileId: String?
-    
-    @Option(
-        help: "Path to save generated file"
-    )
-    var output: String = ""
     
     func run() {
         let figmaAPI: FigmaAPIType = FigmaAPI(token: options.figmaToken)
@@ -65,14 +60,14 @@ struct XCAssets: ParsableCommand {
                     }
                 },
                 receiveValue: { colors, darkColors in
-                    guard let output = URL(string: "file://\(output)") else {
+                    guard let output = URL(string: "file://\(options.output)") else {
                         print("Unable to find output path")
                         Darwin.exit(1)
                     }
                     
                     do {
-                        let colorsModels = try PaletteExtractor(figmaNodes: colors).extract()
-                        let darkColorsModels = try? PaletteExtractor(figmaNodes: darkColors).extract()
+                        let colorsModels = try FigmaPaletteParser(figmaNodes: colors).extract()
+                        let darkColorsModels = try? FigmaPaletteParser(figmaNodes: darkColors).extract()
                         
                         XCColorSetGenerator().save(colors: colorsModels, darkColors: darkColorsModels, at: output)
                         

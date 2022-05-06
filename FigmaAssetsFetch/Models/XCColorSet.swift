@@ -4,22 +4,56 @@ import Foundation
 struct XCColorSet: Codable {
     let colors: [ColorElement]
     let info: XCAssetInfo
+    
+    init(
+        color: ColorObjectModel,
+        darkColor: ColorObjectModel?
+    ) {
+        var colors: [ColorElement] = [
+            ColorElement(colorModel: color)
+        ]
+        
+        if let darkColor = darkColor {
+            colors.append(
+                ColorElement(
+                    colorModel: darkColor,
+                    appearances: [.dark]
+                )
+            )
+        }
+        
+        self.colors = colors
+        self.info = .default
+    }
 }
 
 // MARK: - ColorElement
 struct ColorElement: Codable {
-    let color: ColorColor
+    init(colorModel: ColorObjectModel, appearances: [Appearance]? = nil) {
+        self.color = colorModel.xcColor
+        self.idiom = "universal"
+        self.appearances = appearances
+    }
+    
+    let color: XCColor
     let idiom: String
     let appearances: [Appearance]?
 }
 
 // MARK: - Appearance
 struct Appearance: Codable {
+    public static var dark: Appearance {
+        Appearance(
+            appearance: "luminosity",
+            value: "dark"
+        )
+    }
+    
     let appearance, value: String
 }
 
-// MARK: - ColorColor
-struct ColorColor: Codable {
+// MARK: - XCColor
+struct XCColor: Codable {
     let colorSpace: String
     let components: Components
 
@@ -36,6 +70,13 @@ struct Components: Codable {
 
 // MARK: - Info
 struct XCAssetInfo: Codable {
+    public static var `default`: XCAssetInfo {
+        XCAssetInfo(
+            author: "xcode",
+            version: 1
+        )
+    }
+    
     let author: String
     let version: Int
 }

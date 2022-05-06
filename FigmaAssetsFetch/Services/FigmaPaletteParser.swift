@@ -1,11 +1,11 @@
 import Combine
 import Foundation
 
-enum PaletteExtractorError: Error {
+enum FigmaPaletteParserError: Error {
     case colorsFrameReadError
 }
 
-extension PaletteExtractorError: LocalizedError {
+extension FigmaPaletteParserError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .colorsFrameReadError:
@@ -14,11 +14,11 @@ extension PaletteExtractorError: LocalizedError {
     }
 }
 
-protocol PaletteExtractorType {
+protocol FigmaPaletteParserType {
     func extract() throws -> [ColorObjectModel]
 }
 
-class PaletteExtractor {
+class FigmaPaletteParser {
     private var figmaNodes: FileNodesResponse
     
     init(figmaNodes: FileNodesResponse) {
@@ -72,10 +72,10 @@ class PaletteExtractor {
     }
 }
 
-extension PaletteExtractor: PaletteExtractorType {
+extension FigmaPaletteParser: FigmaPaletteParserType {
     func extract() throws -> [ColorObjectModel] {
         guard let colorsNode = figmaNodes.nodes.first?.value else {
-            throw PaletteExtractorError.colorsFrameReadError
+            throw FigmaPaletteParserError.colorsFrameReadError
         }
         
         let colorsFrameChildren = colorsNode.document.children

@@ -52,7 +52,7 @@ extension XCColorSetGenerator: XCColorSetGeneratorType {
                 )
                 
                 let assetColorInfoURL = colorAssetURL.appendingPathComponent("Contents.json")
-                let colorInfo = XCColorSet.with(
+                let colorInfo = XCColorSet(
                     color: color,
                     darkColor: darkColors?.first(where: { $0.name == color.name })
                 )

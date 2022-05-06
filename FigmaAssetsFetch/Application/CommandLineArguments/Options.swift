@@ -7,7 +7,7 @@ struct Options: ParsableArguments {
     var figmaToken: String = ""
     
     @Option(
-        help: "Templates directory path."
+        help: "A path to generated output"
     )
-    var templatesDirectory: String = ""
+    var output: String = ""
 }
