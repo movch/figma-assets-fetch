@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4C015D5A28202AFC00FEF4C5 /* XCColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C015D5928202AFC00FEF4C5 /* XCColorSet.swift */; };
-		4C015D5C2820419E00FEF4C5 /* XCColorSetGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C015D5B2820419E00FEF4C5 /* XCColorSetGenerator.swift */; };
 		4C052AF525964FD300BB0359 /* FigmaAssetsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C052AF425964FD300BB0359 /* FigmaAssetsFetch.swift */; };
 		4C052AF8259659AF00BB0359 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C052AF7259659AF00BB0359 /* Colors.swift */; };
 		4C052AFB25965E7400BB0359 /* Options.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C052AFA25965E7400BB0359 /* Options.swift */; };
@@ -21,6 +20,7 @@
 		4CA756A7259612FC00776366 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 4CA756A6259612FC00776366 /* ArgumentParser */; };
 		4CB3588C28214B26008D43F9 /* XCAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB3588B28214B26008D43F9 /* XCAssets.swift */; };
 		4CCA373A245DB4B9001A627C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCA3739245DB4B9001A627C /* main.swift */; };
+		4CD1E3F3282923C600C027C2 /* XCAssetsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD1E3F2282923C600C027C2 /* XCAssetsBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,7 +37,6 @@
 
 /* Begin PBXFileReference section */
 		4C015D5928202AFC00FEF4C5 /* XCColorSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCColorSet.swift; sourceTree = "<group>"; };
-		4C015D5B2820419E00FEF4C5 /* XCColorSetGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCColorSetGenerator.swift; sourceTree = "<group>"; };
 		4C052AF425964FD300BB0359 /* FigmaAssetsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FigmaAssetsFetch.swift; sourceTree = "<group>"; };
 		4C052AF7259659AF00BB0359 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		4C052AFA25965E7400BB0359 /* Options.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Options.swift; sourceTree = "<group>"; };
@@ -50,6 +49,7 @@
 		4CB3588B28214B26008D43F9 /* XCAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCAssets.swift; sourceTree = "<group>"; };
 		4CCA3736245DB4B9001A627C /* FigmaAssetsFetch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FigmaAssetsFetch; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CCA3739245DB4B9001A627C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		4CD1E3F2282923C600C027C2 /* XCAssetsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCAssetsBuilder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +90,7 @@
 			children = (
 				4C598F9424616E67001234F4 /* FigmaAPI.swift */,
 				4C598F9624617A30001234F4 /* FigmaPaletteParser.swift */,
-				4C015D5B2820419E00FEF4C5 /* XCColorSetGenerator.swift */,
+				4CD1E3F2282923C600C027C2 /* XCAssetsBuilder.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -216,7 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C598F9A246188E3001234F4 /* StringExtensions.swift in Sources */,
-				4C015D5C2820419E00FEF4C5 /* XCColorSetGenerator.swift in Sources */,
+				4CD1E3F3282923C600C027C2 /* XCAssetsBuilder.swift in Sources */,
 				4C015D5A28202AFC00FEF4C5 /* XCColorSet.swift in Sources */,
 				4C052AF525964FD300BB0359 /* FigmaAssetsFetch.swift in Sources */,
 				4C5A28D1246080E600336DC1 /* FigmaTypes.swift in Sources */,

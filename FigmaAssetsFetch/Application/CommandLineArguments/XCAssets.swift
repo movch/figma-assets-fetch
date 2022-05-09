@@ -22,12 +22,12 @@ struct XCAssets: ParsableCommand {
     var colorsNodeId: String = ""
     
     @Option(
-        help: "Figma node identifier that contains a collection of ellipses with dark colors. Node Id can be parsed from the Figma node url. If not provided dark colors would not be generated."
+        help: "Figma node identifier that contains a collection of ellipses with dark colors. Node Id can be parsed from the Figma node url. Optional. If not provided dark colors won't be generated."
     )
     var darkColorsNodeId: String?
     
     @Option(
-        help: "Figma file identifier with dark colors. Can be extracted from the URL of your Figma document. If not provided it will be taken from `figma-file-id` parameter."
+        help: "Figma file identifier with dark colors. Can be extracted from the URL of your Figma document. Optional. If not provided it will be taken from `figma-file-id` parameter."
     )
     var darkColorsFigmaFileId: String?
     
@@ -47,8 +47,23 @@ struct XCAssets: ParsableCommand {
             return figmaAPI.requestFile(with: fileId, nodeId: darkColorsNodeId)
         }()
 
-        let cancellable = colorsRequest
-            .zip(darkColorsRequest)
+        let cancellable = Publishers.Zip(colorsRequest, darkColorsRequest)
+            .tryMap { colors, darkColors -> [XCAssetsBuilder.AssetType] in
+                let colorsModels = try FigmaPaletteParser(figmaNodes: colors).extract()
+                let darkColorsModels = try? FigmaPaletteParser(figmaNodes: darkColors).extract()
+                
+                return colorsModels.map { colorModel in
+                    XCAssetsBuilder.AssetType.colorSet(
+                        name: colorModel.camelCaseName,
+                        asset: XCColorSet(
+                            color: colorModel,
+                            darkColor: darkColorsModels?.first(where: { darkColorModel in
+                                colorModel.name == darkColorModel.name
+                            })
+                        )
+                    )
+                }
+            }
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
@@ -59,18 +74,19 @@ struct XCAssets: ParsableCommand {
                         Darwin.exit(0)
                     }
                 },
-                receiveValue: { colors, darkColors in
+                receiveValue: { colorSets in
                     guard let output = URL(string: "file://\(options.output)") else {
                         print("Unable to find output path")
                         Darwin.exit(1)
                     }
                     
+                    let assetsBuilder = XCAssetsBuilder(name: "Colors", filePath: output)
+                    
                     do {
-                        let colorsModels = try FigmaPaletteParser(figmaNodes: colors).extract()
-                        let darkColorsModels = try? FigmaPaletteParser(figmaNodes: darkColors).extract()
-                        
-                        XCColorSetGenerator().save(colors: colorsModels, darkColors: darkColorsModels, at: output)
-                        
+                        for colorSet in colorSets {
+                            assetsBuilder.append(asset: colorSet)
+                        }
+                        try assetsBuilder.build()
                     } catch let error {
                         print(error)
                         Darwin.exit(1)
