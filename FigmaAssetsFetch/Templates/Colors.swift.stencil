@@ -1,15 +1,20 @@
 import UIKit
 
-enum Color: Int {
+public enum Color {
 {% for color in colors %}
     case {{ color.camelCaseName }}
 {% endfor %}
 
-    public func color(_ color: ThemeColor) -> UIColor {
+    public var colorValue: UIColor {
         switch color {
         {% for color in colors %}
         case .{{ color.camelCaseName }}:
-            return UIColor(red: {{ color.figmaColor.r }}, green: {{ color.figmaColor.g }}, blue: {{ color.figmaColor.b }}, alpha: {{ color.figmaColor.a }})
+            return UIColor(
+                red: {{ color.figmaColor.r }},
+                green: {{ color.figmaColor.g }},
+                blue: {{ color.figmaColor.b }},
+                alpha: {{ color.figmaColor.a }}
+            )
         {% endfor %}
         }
     }
