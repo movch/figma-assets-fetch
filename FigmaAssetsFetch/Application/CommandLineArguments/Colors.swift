@@ -6,32 +6,32 @@ import Stencil
 
 struct Colors: ParsableCommand {
     static var configuration = CommandConfiguration(
-        abstract: "Download colors information from Figma file and render them to provided template"
+        abstract: "Download colors information from Figma file and render them to provided Stencil template"
     )
-    
+
     @OptionGroup
     var options: Options
-    
+
     @Option(
         help: "Figma file identifier. Can be extracted from the URL of your Figma document."
     )
     var figmaFileId: String = ""
-    
+
     @Option(
         help: "Figma node identifier that contains a collection of ellipses with colors. Node Id can be parsed from the Figma node url."
     )
     var colorsNodeId: String = ""
-    
+
     @Option(
         help: "Template file name to render."
     )
     var templateName: String = ""
-    
+
     @Option(
         help: "Templates directory path."
     )
     var templatesDirectory: String = ""
-    
+
     func run() {
         let figmaAPI: FigmaAPIType = FigmaAPI(token: options.figmaToken)
 
@@ -52,14 +52,14 @@ struct Colors: ParsableCommand {
                         print(rendered)
                         Darwin.exit(0)
                     }
-                    
+
                     do {
                         try rendered.write(
                             to: output,
                             atomically: true,
                             encoding: String.Encoding.utf8
                         )
-                    } catch let error {
+                    } catch {
                         print(error)
                     }
                 }
@@ -69,7 +69,7 @@ struct Colors: ParsableCommand {
         RunLoop.main.run()
         withExtendedLifetime(cancellable) {}
     }
-    
+
     private func render(figmaNodes: FileNodesResponse) throws -> String {
         let paletteExtractor = FigmaPaletteParser(figmaNodes: figmaNodes)
         let paletteColors = try paletteExtractor.extract()
@@ -79,7 +79,7 @@ struct Colors: ParsableCommand {
         let environment = Environment(
             loader: FileSystemLoader(
                 paths: [
-                    Path(templatesDirectory)
+                    Path(templatesDirectory),
                 ]
             )
         )
