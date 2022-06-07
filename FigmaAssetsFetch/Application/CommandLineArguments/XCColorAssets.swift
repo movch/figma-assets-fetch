@@ -3,18 +3,13 @@ import Combine
 import Darwin
 import Foundation
 
-struct XCAssets: ParsableCommand {
+struct XCColorAssets: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Download colors information from Figma file and render them to *.xcassets file"
     )
 
     @OptionGroup
     var options: Options
-
-    @Option(
-        help: "Figma file identifier. Can be extracted from the URL of your Figma document."
-    )
-    var figmaFileId: String = ""
 
     @Option(
         help: "Figma file node identifier that contains a collection of ellipses with colors. Node Id can be parsed from the Figma node url"
@@ -44,6 +39,7 @@ struct XCAssets: ParsableCommand {
     func run() {
         let figmaAPI: FigmaAPIType = FigmaAPI(token: options.figmaToken)
 
+        let figmaFileId = options.figmaFileId
         let colorsRequest = figmaAPI.requestFile(with: figmaFileId, nodeId: colorsNodeId)
         let darkColorsRequest: AnyPublisher<FileNodesResponse, Error> = {
             guard let darkColorsNodeId = self.darkColorsNodeId else {

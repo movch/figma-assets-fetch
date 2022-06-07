@@ -1,21 +1,17 @@
 import ArgumentParser
+import Combine
 import Darwin
 import Foundation
 import PathKit
 import Stencil
 
-struct Colors: ParsableCommand {
+struct ColorsCode: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Download colors information from Figma file and render them to provided Stencil template"
     )
 
     @OptionGroup
     var options: Options
-
-    @Option(
-        help: "Figma file identifier. Can be extracted from the URL of your Figma document."
-    )
-    var figmaFileId: String = ""
 
     @Option(
         help: "Figma node identifier that contains a collection of ellipses with colors. Node Id can be parsed from the Figma node url."
@@ -35,41 +31,18 @@ struct Colors: ParsableCommand {
     func run() {
         let figmaAPI: FigmaAPIType = FigmaAPI(token: options.figmaToken)
 
-        let cancellable = figmaAPI.requestFile(with: figmaFileId, nodeId: colorsNodeId)
+        let cancellable = figmaAPI.requestFile(with: options.figmaFileId, nodeId: colorsNodeId)
             .tryMap(render(figmaNodes:))
             .sink(
-                receiveCompletion: { completion in
-                    switch completion {
-                    case let .failure(error):
-                        print(error)
-                        Darwin.exit(1)
-                    case .finished:
-                        Darwin.exit(0)
-                    }
-                },
-                receiveValue: { rendered in
-                    guard let output = URL(string: "file://\(options.output)") else {
-                        print(rendered)
-                        Darwin.exit(0)
-                    }
-
-                    do {
-                        try rendered.write(
-                            to: output,
-                            atomically: true,
-                            encoding: String.Encoding.utf8
-                        )
-                    } catch {
-                        print(error)
-                    }
-                }
+                receiveCompletion: process(completion:),
+                receiveValue: save(result:)
             )
 
         // Infinitely run the main loop to wait for our request.
         RunLoop.main.run()
         withExtendedLifetime(cancellable) {}
     }
-
+    
     private func render(figmaNodes: FileNodesResponse) throws -> String {
         let paletteExtractor = FigmaPaletteParser(figmaNodes: figmaNodes)
         let paletteColors = try paletteExtractor.extract()
@@ -89,5 +62,33 @@ struct Colors: ParsableCommand {
         )
 
         return rendered
+    }
+    
+    private func process(completion: Subscribers.Completion<Error>) {
+        switch completion {
+        case let .failure(error):
+            print(error)
+            Darwin.exit(1)
+        case .finished:
+            Darwin.exit(0)
+        }
+    }
+    
+    private func save(result: String) {
+        guard let output = URL(string: "file://\(options.output)") else {
+            print(result)
+            Darwin.exit(0)
+        }
+
+        do {
+            try result.write(
+                to: output,
+                atomically: true,
+                encoding: String.Encoding.utf8
+            )
+        } catch {
+            print(error)
+            Darwin.exit(1)
+        }
     }
 }

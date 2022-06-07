@@ -7,6 +7,11 @@ struct Options: ParsableArguments {
     var figmaToken: String = ""
     
     @Option(
+        help: "Figma file identifier. Can be extracted from the URL of your Figma document."
+    )
+    var figmaFileId: String = ""
+    
+    @Option(
         help: "A path to generated output"
     )
     var output: String = ""
