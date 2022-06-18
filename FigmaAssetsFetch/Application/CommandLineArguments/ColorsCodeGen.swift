@@ -5,7 +5,7 @@ import Foundation
 import PathKit
 import Stencil
 
-struct ColorsCode: ParsableCommand {
+struct ColorsCodeGen: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Download colors information from Figma file and render them to provided Stencil template"
     )
