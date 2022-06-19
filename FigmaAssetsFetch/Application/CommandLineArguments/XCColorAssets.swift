@@ -78,36 +78,35 @@ struct XCColorAssets: ParsableCommand {
     private func convertToXCAssets(
         colors: FileNodesResponse,
         darkColors: FileNodesResponse
-    ) throws -> [XCAssetsBuilder.AssetType] {
+    ) throws -> [XCAssets.Asset] {
         let colorsModels = try FigmaPaletteParser(figmaNodes: colors).extract()
         let darkColorsModels = try? FigmaPaletteParser(figmaNodes: darkColors).extract()
 
         return colorsModels.map { colorModel in
-            XCAssetsBuilder.AssetType.colorSet(
-                name: colorModel.camelCaseName,
+            XCAssets.Asset.colorSet(
+                name: colorModel.name.camelCased,
                 asset: XCColorSet(
                     color: colorModel,
                     darkColor: darkColorsModels?.first(where: { darkColorModel in
-                        darkColorModel.name == "\(self.darkColorStyleNamePrefix ?? "")\(colorModel.name)"
+                        darkColorModel.name
+                            .original == "\(self.darkColorStyleNamePrefix ?? "")\(colorModel.name.original)"
                     })
                 )
             )
         }
     }
 
-    private func save(assets: [XCAssetsBuilder.AssetType]) {
-        guard let output = URL(string: "file://\(options.output)") else {
+    private func save(assets: [XCAssets.Asset]) {
+        guard let outputPath = URL(string: "file://\(options.output)") else {
             print("Unable to find output path")
             Darwin.exit(1)
         }
 
-        let assetsBuilder = XCAssetsBuilder(name: assetName ?? "Colors", pathURL: output)
+        let xcAssets = XCAssets(name: assetName ?? "Colors", assets: assets)
+        let assetsRender = XCAssetsFileSystemRender(path: outputPath, content: xcAssets)
 
         do {
-            for asset in assets {
-                assetsBuilder.append(asset: asset)
-            }
-            try assetsBuilder.build()
+            try assetsRender.render()
         } catch {
             print(error)
             Darwin.exit(1)

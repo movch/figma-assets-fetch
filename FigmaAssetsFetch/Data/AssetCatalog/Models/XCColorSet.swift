@@ -2,13 +2,13 @@ import Foundation
 
 // MARK: - XCColorSet
 
-struct XCColorSet: Codable {
+public struct XCColorSet: Codable {
     let colors: [XCColorElement]
     let info: XCAssetInfo
 
     init(
-        color: ColorData,
-        darkColor: ColorData?
+        color: NamedColor,
+        darkColor: NamedColor?
     ) {
         var colors: [XCColorElement] = [
             XCColorElement(colorModel: color),
@@ -30,9 +30,9 @@ struct XCColorSet: Codable {
 
 // MARK: - XCColorElement
 
-struct XCColorElement: Codable {
-    init(colorModel: ColorData, appearances: [Appearance]? = nil) {
-        color = colorModel.xcColor
+public struct XCColorElement: Codable {
+    init(colorModel: NamedColor, appearances: [Appearance]? = nil) {
+        color = XCColor(with: colorModel)
         idiom = "universal"
         self.appearances = appearances
     }
@@ -44,7 +44,7 @@ struct XCColorElement: Codable {
 
 // MARK: - Appearance
 
-struct Appearance: Codable {
+public struct Appearance: Codable {
     public static var dark: Appearance {
         Appearance(
             appearance: "luminosity",
@@ -57,32 +57,28 @@ struct Appearance: Codable {
 
 // MARK: - XCColor
 
-struct XCColor: Codable {
-    let colorSpace: String
-    let components: XCColorComponents
-
+public struct XCColor: Codable {
     enum CodingKeys: String, CodingKey {
         case colorSpace = "color-space"
         case components
+    }
+
+    let colorSpace: String
+    let components: XCColorComponents
+
+    init(with namedColor: NamedColor) {
+        colorSpace = "srgb"
+        components = XCColorComponents(
+            alpha: "\(namedColor.value.a)",
+            blue: "\(namedColor.value.b)",
+            green: "\(namedColor.value.g)",
+            red: "\(namedColor.value.r)"
+        )
     }
 }
 
 // MARK: - XCColorComponents
 
-struct XCColorComponents: Codable {
+public struct XCColorComponents: Codable {
     let alpha, blue, green, red: String
-}
-
-// MARK: - Info
-
-struct XCAssetInfo: Codable {
-    public static var `default`: XCAssetInfo {
-        XCAssetInfo(
-            author: "xcode",
-            version: 1
-        )
-    }
-
-    let author: String
-    let version: Int
 }

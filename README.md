@@ -15,7 +15,7 @@ It can obtain color information from the specially prepared frame in any Figma d
 ![Creating style name in Figma](img/creating-style-name-in-figma.png)
 
 ### Template part
-The template file is just a [Stencil](https://github.com/stencilproject/Stencil) template. All colors obtained from Figma, are being passed to template as an array of objects. Refer to [ColorData](https://github.com/movch/figma-asset-fetch/blob/main/FigmaAssetsFetch/Models/ColorData.swift) to gain understanding about such objects content.
+The template file is just a [Stencil](https://github.com/stencilproject/Stencil) template. All colors obtained from Figma, are being passed to template as an array of objects. Refer to [NamedColor](https://github.com/movch/figma-asset-fetch/blob/main/FigmaAssetsFetch/Domain/Entities/NamedColor.swift) to gain understanding about such objects content.
 
 Example template:
 
@@ -23,18 +23,18 @@ Example template:
 
     public enum Color {
     {% for color in colors %}
-        case {{ color.camelCaseName }}
+        case {{ color.name.camelCased }}
     {% endfor %}
 
         public var colorValue: UIColor {
             switch color {
             {% for color in colors %}
-            case .{{ color.camelCaseName }}:
+            case .{{ color.name.camelCased }}:
                 return UIColor(
-                    red: {{ color.figmaColor.r }},
-                    green: {{ color.figmaColor.g }},
-                    blue: {{ color.figmaColor.b }},
-                    alpha: {{ color.figmaColor.a }}
+                    red: {{ color.value.r }},
+                    green: {{ color.value.g }},
+                    blue: {{ color.value.b }},
+                    alpha: {{ color.value.a }}
                 )
             {% endfor %}
             }
@@ -48,7 +48,7 @@ To run the utility you need to pass several parameters, use `figma-assets-fetch 
 This command is used for template-based code generation of colors obtained from Figma file.
 
     figma-assets-fetch \
-        colors \
+        colors-code-gen \
         --figma-token $FIGMA_TOKEN \ #Figma API token
         --templates-directory "$TEMPLATES_DIR" \ #Path to directory with Stencil templates
         --figma-file-id $FIGMA_FILE_ID \ #File identifier of your Figma document
@@ -60,7 +60,7 @@ This command is used for template-based code generation of colors obtained from 
 This command is used to generate `*.xcassets` file with colors from Figma.
 
     figma-assets-fetch \
-            xc-assets \
+            xc-color-assets \
             --figma-token $FIGMA_TOKEN \ #Figma API token
             --figma-file-id $FIGMA_FILE_ID \ #File identifier of your Figma document
             --colors-node-id $FIGMA_COLOR_NODE \ #Figma frame node id that contains color palete

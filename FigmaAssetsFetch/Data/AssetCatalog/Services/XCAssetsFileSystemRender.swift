@@ -1,30 +1,19 @@
 import Foundation
 
-class XCAssetsBuilder {
-    enum AssetType {
-        case colorSet(name: String, asset: XCColorSet)
-    }
+public protocol XCAssetsRender {
+    func render() throws
+}
 
-    private var name: String
-    private var pathURL: URL
+public struct XCAssetsFileSystemRender {
+    let path: URL
+    let content: XCAssets
+}
 
-    private var assets: [AssetType] = []
-
-    public init(name: String, pathURL: URL) {
-        self.name = name
-        self.pathURL = pathURL
-    }
-
-    @discardableResult
-    public func append(asset: AssetType) -> XCAssetsBuilder {
-        assets.append(asset)
-        return self
-    }
-
-    public func build() throws {
+extension XCAssetsFileSystemRender: XCAssetsRender {
+    public func render() throws {
         let assetFolderURL = try createAssetFolder()
 
-        for asset in assets {
+        for asset in content.assets {
             switch asset {
             case let .colorSet(name, colorSet):
                 let colorSetURL = assetFolderURL.appendingPathComponent("\(name).colorset")
@@ -34,7 +23,7 @@ class XCAssetsBuilder {
     }
 
     private func createAssetFolder() throws -> URL {
-        let assetFolderURL: URL = pathURL.appendingPathComponent("\(name).xcassets")
+        let assetFolderURL: URL = path.appendingPathComponent("\(content.name).xcassets")
         try FileManager.default.createDirectory(
             atPath: assetFolderURL.path,
             withIntermediateDirectories: true,

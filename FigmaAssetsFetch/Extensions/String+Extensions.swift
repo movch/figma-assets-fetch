@@ -4,7 +4,7 @@ extension String {
     var lowercasedFirstLetter: String {
         return prefix(1).lowercased() + dropFirst()
     }
-    
+
     var capitalizedFirstLetter: String {
         return prefix(1).capitalized + dropFirst()
     }
@@ -16,22 +16,20 @@ extension String {
             options: .regularExpression
         )
     }
-    
+
     var camelCased: String {
-        return self
-            .stripped
+        return stripped
             .components(separatedBy: .whitespaces)
-            .map({ $0.capitalizedFirstLetter })
+            .map { $0.capitalizedFirstLetter }
             .joined()
             .lowercasedFirstLetter
     }
 
     var snakeCased: String {
-        return self
-            .stripped
+        return stripped
             .components(separatedBy: .whitespaces)
             .filter { !$0.isEmpty }
-            .map { $0.lowercasedFirstLetter  }
+            .map { $0.lowercasedFirstLetter }
             .joined(separator: "_")
     }
 }

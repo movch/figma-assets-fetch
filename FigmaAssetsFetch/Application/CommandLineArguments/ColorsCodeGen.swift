@@ -42,11 +42,11 @@ struct ColorsCodeGen: ParsableCommand {
         RunLoop.main.run()
         withExtendedLifetime(cancellable) {}
     }
-    
+
     private func render(figmaNodes: FileNodesResponse) throws -> String {
         let paletteExtractor = FigmaPaletteParser(figmaNodes: figmaNodes)
         let paletteColors = try paletteExtractor.extract()
-            .sorted(by: { first, second in first.name < second.name })
+            .sorted(by: { first, second in first.name.original < second.name.original })
 
         let context = ["colors": paletteColors]
         let environment = Environment(
@@ -63,7 +63,7 @@ struct ColorsCodeGen: ParsableCommand {
 
         return rendered
     }
-    
+
     private func process(completion: Subscribers.Completion<Error>) {
         switch completion {
         case let .failure(error):
@@ -73,7 +73,7 @@ struct ColorsCodeGen: ParsableCommand {
             Darwin.exit(0)
         }
     }
-    
+
     private func save(result: String) {
         guard let output = URL(string: "file://\(options.output)") else {
             print(result)

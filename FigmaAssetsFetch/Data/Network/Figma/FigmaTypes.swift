@@ -75,7 +75,7 @@ public struct Component: Codable {
     /// (see blend mode section for more details)
     public let blendMode: BlendMode
     /// An array of nodes that are direct children of this node
-    public let children: [Document]
+    public let children: [FigmaDocument]
     /// Does this node clip content outside of its bounds?
     public let clipsContent: Bool
     /// Horizontal and vertical layout constraints for node
@@ -142,14 +142,6 @@ public struct FigmaColor: Codable {
     public var g: Double
     /// Red channel value, between 0 and 1
     public var r: Double
-    
-    public func toHex() -> String {
-        return String(format: "%02lX%02lX%02lX", lround(r * 255), lround(g * 255), lround(b * 255))
-    }
-
-    public func toFullHex() -> String {
-        return String(format: "%02lX%02lX%02lX%02lX", lround(a * 255), lround(r * 255), lround(g * 255), lround(b * 255))
-    }
 }
 
 /// How this node blends with nodes behind it in the scene
@@ -214,7 +206,7 @@ public enum BlendMode: String, Codable {
 ///
 /// An instance of a component, changes to the component result in the same
 /// changes applied to the instance
-public struct Document: Codable {
+public struct FigmaDocument: Codable {
     /// An array of canvases attached to the document
     ///
     /// An array of top level layers on the canvas
@@ -222,7 +214,7 @@ public struct Document: Codable {
     /// An array of nodes that are direct children of this node
     ///
     /// An array of nodes that are being boolean operated on
-    public let children: [Document]?
+    public let children: [FigmaDocument]?
     /// a string uniquely identifying this node within the document
     public let id: String
     /// the name given to the node by the user in the tool.
@@ -298,9 +290,9 @@ public struct Document: Codable {
 
     enum CodingKeys: String, CodingKey {
         case children, id, name, type, visible, backgroundColor, exportSettings, absoluteBoundingBox, blendMode,
-            clipsContent, constraints, effects, isMask, layoutGrids, opacity, preserveRatio, transitionNodeID, fills,
-            strokeAlign, strokes, strokeWeight, cornerRadius, characters, characterStyleOverrides, style, styles,
-            description
+             clipsContent, constraints, effects, isMask, layoutGrids, opacity, preserveRatio, transitionNodeID, fills,
+             strokeAlign, strokes, strokeWeight, cornerRadius, characters, characterStyleOverrides, style, styles,
+             description
         case componentID = "componentId"
     }
 }
@@ -637,7 +629,7 @@ public enum NodeType: String, Codable {
 /// The root node within the document
 public struct DocumentClass: Codable {
     /// An array of canvases attached to the document
-    public let children: [Document]
+    public let children: [FigmaDocument]
     /// a string uniquely identifying this node within the document
     public let id: String
     /// the name given to the node by the user in the tool.
@@ -915,9 +907,9 @@ public extension FigmaColor {
     }
 }
 
-public extension Document {
+public extension FigmaDocument {
     init(data: Data) throws {
-        self = try JSONDecoder().decode(Document.self, from: data)
+        self = try JSONDecoder().decode(FigmaDocument.self, from: data)
     }
 
     init(_ json: String, using encoding: String.Encoding = .utf8) throws {

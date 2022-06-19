@@ -15,7 +15,7 @@ extension FigmaPaletteParserError: LocalizedError {
 }
 
 protocol FigmaPaletteParserType {
-    func extract() throws -> [ColorData]
+    func extract() throws -> [NamedColor]
 }
 
 class FigmaPaletteParser {
@@ -25,8 +25,8 @@ class FigmaPaletteParser {
         self.figmaNodes = figmaNodes
     }
 
-    private func findEllipses(in root: [Document]) -> [Document] {
-        var result = [Document]()
+    private func findEllipses(in root: [FigmaDocument]) -> [FigmaDocument] {
+        var result = [FigmaDocument]()
 
         for document in root {
             if document.type == .ellipse {
@@ -41,40 +41,50 @@ class FigmaPaletteParser {
         return result
     }
 
-    private func process(_ ellipse: Document, with styles: [String: Style]) -> ColorData? {
+    private func process(_ ellipse: FigmaDocument, with styles: [String: Style]) -> NamedColor? {
         guard let color = ellipse.fills?.first?.color else {
             print("Failed to parse ellipse: \(ellipse.id) \(ellipse.name)")
             return nil
         }
 
-        var styleName = ellipse.name
+        let styleName: String = extractStyleName(from: ellipse, with: styles)
+        let alphaValue: Double = extractAlphaValue(from: ellipse, and: color)
+
+        let extractedColor = NamedColor(
+            name: .init(name: styleName),
+            value: .init(
+                r: color.r,
+                g: color.g,
+                b: color.b,
+                a: alphaValue
+            )
+        )
+
+        return extractedColor
+    }
+
+    private func extractStyleName(from ellipse: FigmaDocument, with styles: [String: Style]) -> String {
         if let styleId = ellipse.styles?["fill"],
            let styleTitle = styles[styleId]?.name
         {
-            styleName = styleTitle
+            return styleTitle
         }
 
-        var extractedColor = ColorData(
-            name: styleName,
-            camelCaseName: styleName.camelCased,
-            snakeCaseName: styleName.snakeCased,
-            hexColor: color.toHex(),
-            fullHexColor: color.toFullHex(),
-            figmaColor: color
-        )
+        return ellipse.name
+    }
 
-        // if opacity of ellipse was set we need to take it
+    private func extractAlphaValue(from ellipse: FigmaDocument, and color: FigmaColor) -> Double {
         if let opacity = ellipse.fills?.first?.opacity {
-            extractedColor.figmaColor.a = opacity
-            extractedColor.fullHexColor = extractedColor.figmaColor.toFullHex()
+            // if opacity of ellipse was set we need to take it
+            return opacity
         }
 
-        return extractedColor
+        return color.a
     }
 }
 
 extension FigmaPaletteParser: FigmaPaletteParserType {
-    func extract() throws -> [ColorData] {
+    func extract() throws -> [NamedColor] {
         guard let colorsNode = figmaNodes.nodes.first?.value else {
             throw FigmaPaletteParserError.colorsFrameReadError
         }
@@ -83,7 +93,7 @@ extension FigmaPaletteParser: FigmaPaletteParserType {
 
         let ellipses = findEllipses(in: colorsFrameChildren)
         let styles = colorsNode.styles
-        let paletteColors: [ColorData] = ellipses.compactMap { ellipse in
+        let paletteColors: [NamedColor] = ellipses.compactMap { ellipse in
             process(ellipse, with: styles)
         }
 

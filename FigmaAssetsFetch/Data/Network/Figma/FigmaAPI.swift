@@ -32,7 +32,7 @@ extension FigmaAPI: FigmaAPIType {
 
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { $0 as Error }
-            .map { return $0.data }
+            .map { $0.data }
             .decode(type: FileNodesResponse.self, decoder: JSONDecoder())
             .eraseToAnyPublisher()
     }
