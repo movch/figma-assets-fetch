@@ -21,7 +21,7 @@ public struct NamedColor {
     }
 
     /// Color style RGBA color info
-    struct Color {
+    public struct Color {
         /// Alpha channel value, between 0 and 1
         public let a: Double
         /// Blue channel value, between 0 and 1
@@ -54,6 +54,11 @@ public struct NamedColor {
         }
     }
 
-    let name: Name
-    let value: Color
+    public let name: Name
+    public let value: Color
+    
+    public init(name: NamedColor.Name, value: NamedColor.Color) {
+        self.name = name
+        self.value = value
+    }
 }
