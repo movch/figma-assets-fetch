@@ -6,7 +6,7 @@ let package = Package(
     name: "FigmaAssetsFetch",
     platforms: [.macOS(.v10_15)],
     products: [
-        .executable(name: "figma-assets-fetch", targets: ["FigmaAssetsFetch"])
+           .executable(name: "figma-assets-fetch", targets: ["FigmaAssetsFetch"])
     ],
     dependencies: [
         .package(url: "https://github.com/stencilproject/Stencil", from: "0.13.1"),
