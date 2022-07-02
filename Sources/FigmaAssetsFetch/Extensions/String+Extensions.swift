@@ -29,7 +29,7 @@ extension String {
         return stripped
             .components(separatedBy: .whitespaces)
             .filter { !$0.isEmpty }
-            .map { $0.lowercasedFirstLetter }
+            .map { $0.lowercased() }
             .joined(separator: "_")
     }
 }
