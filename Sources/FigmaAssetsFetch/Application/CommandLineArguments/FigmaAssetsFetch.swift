@@ -13,10 +13,10 @@ struct FigmaAssetsFetch: ParsableCommand {
         // Pass an array to `subcommands` to set up a nested tree of subcommands.
         // With language support for type-level introspection, this could be
         // provided by automatically finding nested `ParsableCommand` types.
-        subcommands: [ColorsCodeGen.self, XCColorAssets.self],
+        subcommands: [ColorsCodeGen.self, ColorsXCAssets.self],
 
         // A default subcommand, when provided, is automatically selected if a
         // subcommand is not given on the command line.
-        defaultSubcommand: XCColorAssets.self
-     )
+        defaultSubcommand: ColorsXCAssets.self
+    )
 }

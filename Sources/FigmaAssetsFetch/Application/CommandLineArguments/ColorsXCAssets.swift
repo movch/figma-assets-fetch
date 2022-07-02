@@ -3,7 +3,7 @@ import Combine
 import Darwin
 import Foundation
 
-struct XCColorAssets: ParsableCommand {
+struct ColorsXCAssets: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Download colors information from Figma file and render them to *.xcassets file"
     )

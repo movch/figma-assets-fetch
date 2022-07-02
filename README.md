@@ -3,7 +3,9 @@
 A macOS command-line utility for template-based code generation from Figma assets. Unlike other similar utilities it follows the *conventions-over-configurations* principle, which requires less effort in development and usage.
 
 ## What can it do?
-It can obtain color information from the specially prepared frame in any Figma document and render it to provided code template.
+
+- It can perform template based code generation from Figma frame with colors;
+- It can generate `*.xcassets` file with color set obtained from Figma frame.
 
 ## Getting Started
 
@@ -41,10 +43,10 @@ Example template:
         }
     }
 
-### Command line part
+### Commands reference
 To run the utility you need to pass several parameters, use `figma-assets-fetch help` for detail description of parameters, or refer to the examples below.
 
-#### `colors` command
+#### `colors-code-gen` command
 This command is used for template-based code generation of colors obtained from Figma file.
 
     figma-assets-fetch \
@@ -56,11 +58,11 @@ This command is used for template-based code generation of colors obtained from 
         --colors-node-id $FIGMA_COLOR_NODE \ #Figma frame node id that contains color palete
         --output "$OUT_FILE_PATH" #Where to save generated file
 
-#### `xcassets` command
+#### `colors-xc-assets` command
 This command is used to generate `*.xcassets` file with colors from Figma.
 
     figma-assets-fetch \
-            xc-color-assets \
+            colors-xc-assets \
             --figma-token $FIGMA_TOKEN \ #Figma API token
             --figma-file-id $FIGMA_FILE_ID \ #File identifier of your Figma document
             --colors-node-id $FIGMA_COLOR_NODE \ #Figma frame node id that contains color palete
@@ -73,15 +75,15 @@ It is also possible to specify another Figma file for dark colors, use `--dark-c
 
 ## F.A.Q
 
-### Where to get `figma-token`?
-Obtain the access token on the Figma account settings page.
+### What is `figma-token`?
+You can generate your access token on the Figma account settings page.
 
 ![](img/figma-personal-access-token.png)
 
-### Where to get `figma-file-id`?
+### What is `figma-file-id`?
 It can be parsed from the Figma file URL. For example, your Figma file URL is `https://www.figma.com/file/lzXbn6LsYv5kesGqDcsOAl/FigmaAssetsFetch-Palette-Example?node-id=0%3A1` then `figma-file-id` will be `lzXbn6LsYv5kesGqDcsOAl`.
 
-### Where to get `colors-node-id`?
+### What is `colors-node-id`?
 It can be parsed from the Figma file URL. For example, your Figma file URL is `https://www.figma.com/file/lzXbn6LsYv5kesGqDcsOAl/FigmaAssetsFetch-Palette-Example?node-id=0%3A1` then `colors-node-id` will be `0:1` (this is a decoded version of the URL encoded `0%3A1` string, you can use any online decoder/encoder ([like this](https://meyerweb.com/eric/tools/dencoder/)) to get it).
 
 ## Building
