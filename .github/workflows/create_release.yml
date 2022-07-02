@@ -1,10 +1,10 @@
+name: Create Release
+
 on:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
-name: Create Release
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
     - name: Build release binary
       run: swift build -c release
     - name: Zip artifact for deployment
-      run: zip figma-assets-fetch.zip .build/release/figma-assets-fetch
+      run: zip -j figma-assets-fetch.zip .build/release/figma-assets-fetch
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
