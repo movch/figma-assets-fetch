@@ -14,9 +14,9 @@ struct ColorsCodeGen: ParsableCommand {
     var options: Options
 
     @Option(
-        help: "Figma node identifier that contains a collection of ellipses with colors. Node Id can be parsed from the Figma node url."
+        help: "Figma frame url that contains a collection of ellipses with colors."
     )
-    var colorsNodeId: String = ""
+    var colorsNodeURL: String = ""
 
     @Option(
         help: "Template file name to render."
@@ -30,8 +30,16 @@ struct ColorsCodeGen: ParsableCommand {
 
     func run() {
         let figmaAPI: FigmaAPIType = FigmaAPI(token: options.figmaToken)
+        let figmaURLParser: FigmaURLParserType = FigmaURLParser()
 
-        let cancellable = figmaAPI.requestFile(with: options.figmaFileId, nodeId: colorsNodeId)
+        guard let figmaFileId = try? figmaURLParser.extractFileId(from: colorsNodeURL),
+              let colorsNodeId = try? figmaURLParser.extractNodeId(from: colorsNodeURL)
+        else {
+            print("Incorrect Figma URL")
+            Darwin.exit(1)
+        }
+
+        let cancellable = figmaAPI.requestFile(with: figmaFileId, nodeId: colorsNodeId)
             .tryMap(render(figmaNodes:))
             .sink(
                 receiveCompletion: process(completion:),

@@ -12,24 +12,14 @@ struct ColorsXCAssets: ParsableCommand {
     var options: Options
 
     @Option(
-        help: "Figma file node identifier that contains a collection of ellipses with colors. Node Id can be parsed from the Figma node url"
+        help: "Figma frame url that contains a collection of ellipses with colors."
     )
-    var colorsNodeId: String = ""
+    var colorsNodeURL: String = ""
 
     @Option(
-        help: "Optional. Figma file identifier with dark colors. Can be extracted from the URL of your Figma document. If not provided it will be taken from `figma-file-id` parameter."
+        help: "Optional. Figma frame url that contains a collection of ellipses with dark colors."
     )
-    var darkColorsFigmaFileId: String?
-
-    @Option(
-        help: "Optional. Figma node identifier that contains a collection of ellipses with dark colors. Node Id can be parsed from the Figma node url. If not provided dark colors won't be generated."
-    )
-    var darkColorsNodeId: String?
-
-    @Option(
-        help: "Optional. Dark color style name prefix."
-    )
-    var darkColorStyleNamePrefix: String?
+    var darkColorsNodeURL: String?
 
     @Option(
         help: "Optional. Name of the result *.xcassets file. Default is 'Colors'."
@@ -38,19 +28,27 @@ struct ColorsXCAssets: ParsableCommand {
 
     func run() {
         let figmaAPI: FigmaAPIType = FigmaAPI(token: options.figmaToken)
+        let figmaURLParser: FigmaURLParserType = FigmaURLParser()
 
-        let figmaFileId = options.figmaFileId
+        guard let figmaFileId = try? figmaURLParser.extractFileId(from: colorsNodeURL),
+              let colorsNodeId = try? figmaURLParser.extractNodeId(from: colorsNodeURL)
+        else {
+            print("Incorrect Figma frame URL")
+            Darwin.exit(1)
+        }
+
         let colorsRequest = figmaAPI.requestFile(with: figmaFileId, nodeId: colorsNodeId)
         let darkColorsRequest: AnyPublisher<FileNodesResponse, Error> = {
-            guard let darkColorsNodeId = self.darkColorsNodeId else {
+            guard let darkColorsNodeURL = self.darkColorsNodeURL,
+                  let darkColorsFileId = try? figmaURLParser.extractFileId(from: darkColorsNodeURL),
+                  let darkColorsNodeId = try? figmaURLParser.extractNodeId(from: darkColorsNodeURL)
+            else {
                 return Just(FileNodesResponse(nodes: [:], name: ""))
                     .setFailureType(to: Error.self)
                     .eraseToAnyPublisher()
             }
 
-            let fileId = darkColorsFigmaFileId ?? figmaFileId
-
-            return figmaAPI.requestFile(with: fileId, nodeId: darkColorsNodeId)
+            return figmaAPI.requestFile(with: darkColorsFileId, nodeId: darkColorsNodeId)
         }()
 
         let cancellable = Publishers.Zip(colorsRequest, darkColorsRequest)
@@ -88,8 +86,7 @@ struct ColorsXCAssets: ParsableCommand {
                 asset: XCColorSet(
                     color: colorModel,
                     darkColor: darkColorsModels?.first(where: { darkColorModel in
-                        darkColorModel.name
-                            .original == "\(self.darkColorStyleNamePrefix ?? "")\(colorModel.name.original)"
+                        darkColorModel.name.original.contains(colorModel.name.original)
                     })
                 )
             )

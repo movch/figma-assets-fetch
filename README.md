@@ -52,10 +52,9 @@ This command is used for template-based code generation of colors obtained from 
     figma-assets-fetch \
         colors-code-gen \
         --figma-token $FIGMA_TOKEN \ #Figma API token
+        --colors-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3" \
         --templates-directory "$TEMPLATES_DIR" \ #Path to directory with Stencil templates
-        --figma-file-id $FIGMA_FILE_ID \ #File identifier of your Figma document
         --template-name Colors.swift.stencil \ #File name of the Stencil template to use
-        --colors-node-id $FIGMA_COLOR_NODE \ #Figma frame node id that contains color palete
         --output "$OUT_FILE_PATH" #Where to save generated file
 
 #### `colors-xc-assets` command
@@ -64,14 +63,12 @@ This command is used to generate `*.xcassets` file with colors from Figma.
     figma-assets-fetch \
             colors-xc-assets \
             --figma-token $FIGMA_TOKEN \ #Figma API token
-            --figma-file-id $FIGMA_FILE_ID \ #File identifier of your Figma document
-            --colors-node-id $FIGMA_COLOR_NODE \ #Figma frame node id that contains color palete
+            --colors-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3" \
+            --dark-colors-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=401%3A2" \
             --asset-name $XCASSET_FILENAME \ #Optional. Name of the result *.xcassets file. Default is 'Colors'.
-            --dark-color-style-name-prefix "Dark/" \ #Optional. Dark color style name prefix.
-            --dark-colors-node-id $FIGMA_DARK_COLOR_NODE \ #Figma node identifier that contains a collection of ellipses with dark colors.
             --output "$OUT_FILE_PATH" #Where to save generated file
 
-It is also possible to specify another Figma file for dark colors, use `--dark-colors-figma-file-id` parameter for it.
+*Note*: light and dark colors are being matched by name, dark color name should contain light color name. E.g. `Bg / Primary` and `Dark / Bg / Primary` will be matched.
 
 ## F.A.Q
 
@@ -79,12 +76,6 @@ It is also possible to specify another Figma file for dark colors, use `--dark-c
 You can generate your access token on the Figma account settings page.
 
 ![](img/figma-personal-access-token.png)
-
-### What is `figma-file-id`?
-It can be parsed from the Figma file URL. For example, your Figma file URL is `https://www.figma.com/file/lzXbn6LsYv5kesGqDcsOAl/FigmaAssetsFetch-Palette-Example?node-id=0%3A1` then `figma-file-id` will be `lzXbn6LsYv5kesGqDcsOAl`.
-
-### What is `colors-node-id`?
-It can be parsed from the Figma file URL. For example, your Figma file URL is `https://www.figma.com/file/lzXbn6LsYv5kesGqDcsOAl/FigmaAssetsFetch-Palette-Example?node-id=0%3A1` then `colors-node-id` will be `0:1` (this is a decoded version of the URL encoded `0%3A1` string, you can use any online decoder/encoder ([like this](https://meyerweb.com/eric/tools/dencoder/)) to get it).
 
 ## Building
 The utility is written in Swift for macOS. Just clone the repository and build the project with the latest version of Xcode.
