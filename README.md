@@ -28,8 +28,8 @@ Example template:
         case {{ color.name.camelCased }}
     {% endfor %}
 
-        public var colorValue: UIColor {
-            switch color {
+        public var value: UIColor {
+            switch self {
             {% for color in colors %}
             case .{{ color.name.camelCased }}:
                 return UIColor(
@@ -42,20 +42,21 @@ Example template:
             }
         }
     }
+    
+Save it to file with `*.stencil` extension.
 
 ### Commands reference
 To run the utility you need to pass several parameters, use `figma-assets-fetch help` for detail description of parameters, or refer to the examples below.
 
 #### `colors-code-gen` command
 This command is used for template-based code generation of colors obtained from Figma file.
-
-    figma-assets-fetch \
-        colors-code-gen \
-        --figma-token $FIGMA_TOKEN \ #Figma API token
-        --colors-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3" \
-        --templates-directory "$TEMPLATES_DIR" \ #Path to directory with Stencil templates
-        --template-name Colors.swift.stencil \ #File name of the Stencil template to use
-        --output "$OUT_FILE_PATH" #Where to save generated file
+        
+    figma-assets-fetch \ 
+        colors-code-gen \ 
+        --figma-token $FIGMA_TOKEN \ #Figma API token \ 
+        --colors-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3" \ 
+        --template-path "/Users/michael/Documents/ColorsEnum.stencil" \
+        --output "/Users/michael/Documents/Colors.swift"
 
 #### `colors-xc-assets` command
 This command is used to generate `*.xcassets` file with colors from Figma.

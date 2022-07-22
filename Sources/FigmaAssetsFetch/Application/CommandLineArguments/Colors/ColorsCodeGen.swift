@@ -13,63 +13,38 @@ struct ColorsCodeGen: ParsableCommand {
     @OptionGroup
     var options: Options
 
-    @Option(
-        help: "Figma frame url that contains a collection of ellipses with colors."
-    )
-    var colorsNodeURL: String = ""
+    @OptionGroup
+    var colorsOptions: ColorsOptions
 
     @Option(
-        help: "Template file name to render."
+        help: "Path to Stencil template file to render. It should have `*.stencil` extension."
     )
-    var templateName: String = ""
-
-    @Option(
-        help: "Templates directory path."
-    )
-    var templatesDirectory: String = ""
+    var templatePath: String = ""
 
     func run() {
-        let figmaAPI: FigmaAPIType = FigmaAPI(token: options.figmaToken)
-        let figmaURLParser: FigmaURLParserType = FigmaURLParser()
+        let source = FigmaColorsSource(
+            colorsURLPath: colorsOptions.colorsNodeURL,
+            darkColorsURLPath: colorsOptions.darkColorsNodeURL,
+            figmaAPI: FigmaAPI(token: options.figmaToken)
+        )
 
-        guard let figmaFileId = try? figmaURLParser.extractFileId(from: colorsNodeURL),
-              let colorsNodeId = try? figmaURLParser.extractNodeId(from: colorsNodeURL)
-        else {
-            print("Incorrect Figma URL")
-            Darwin.exit(1)
-        }
+        let render = TemplateFileSystemRender(templatePath: templatePath)
 
-        let cancellable = figmaAPI.requestFile(with: figmaFileId, nodeId: colorsNodeId)
-            .tryMap(render(figmaNodes:))
+        let useCase = GetRemoteColorsUseCase(
+            source: source,
+            render: render,
+            output: options.output
+        )
+
+        let cancellable = useCase.run()
             .sink(
                 receiveCompletion: process(completion:),
-                receiveValue: save(result:)
+                receiveValue: { _ in }
             )
 
         // Infinitely run the main loop to wait for our request.
         RunLoop.main.run()
         withExtendedLifetime(cancellable) {}
-    }
-
-    private func render(figmaNodes: FileNodesResponse) throws -> String {
-        let paletteExtractor = FigmaPaletteParser()
-        let paletteColors = try paletteExtractor.extract(figmaNodes: figmaNodes)
-            .sorted(by: { first, second in first.name.original < second.name.original })
-
-        let context = ["colors": paletteColors]
-        let environment = Environment(
-            loader: FileSystemLoader(
-                paths: [
-                    Path(templatesDirectory),
-                ]
-            )
-        )
-        let rendered = try environment.renderTemplate(
-            name: templateName,
-            context: context
-        )
-
-        return rendered
     }
 
     private func process(completion: Subscribers.Completion<Error>) {
@@ -78,25 +53,8 @@ struct ColorsCodeGen: ParsableCommand {
             print(error)
             Darwin.exit(1)
         case .finished:
+            print("Done.")
             Darwin.exit(0)
-        }
-    }
-
-    private func save(result: String) {
-        guard let output = URL(string: "file://\(options.output)") else {
-            print(result)
-            Darwin.exit(0)
-        }
-
-        do {
-            try result.write(
-                to: output,
-                atomically: true,
-                encoding: String.Encoding.utf8
-            )
-        } catch {
-            print(error)
-            Darwin.exit(1)
         }
     }
 }

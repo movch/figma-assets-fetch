@@ -1,0 +1,3 @@
+{% for color in colors %}
+{{ color.name.camelCased }} {{ color.value.r }} {{ color.value.g }} {{ color.value.b }} {{ color.value.a }} {{ color.value.hexValue }}
+{% endfor %}
