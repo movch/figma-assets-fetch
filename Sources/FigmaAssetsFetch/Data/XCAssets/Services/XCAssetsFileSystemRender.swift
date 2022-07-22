@@ -1,60 +1,66 @@
 import Foundation
 
-public protocol XCAssetsRender {
-    func render() throws
+public enum XCAssetsFileSystemRenderError: Error {
+    case invalidOutputPath
 }
 
 public struct XCAssetsFileSystemRender {
     public init(
-        path: URL,
-        content: XCAssets,
         fileManager: FileManagerType = FileManager.default,
         fileWriter: FileWriterType = FileWriter()
     ) {
-        self.path = path
-        self.content = content
         self.fileManager = fileManager
         self.fileWriter = fileWriter
     }
 
-    private let path: URL
-    private let content: XCAssets
-
-    private var fileManager: FileManagerType
-    private var fileWriter: FileWriterType
+    private let fileManager: FileManagerType
+    private let fileWriter: FileWriterType
 }
 
-extension XCAssetsFileSystemRender: XCAssetsRender {
-    public func render() throws {
-        let assetFolderURL = try createAssetFolder()
+extension XCAssetsFileSystemRender: ColorsRender {
+    public func render(colors: [NamedColor], output: String) throws {
+        guard let outputURL = URL(string: "file://\(output)"),
+              outputURL.lastPathComponent.contains(".xcassets")
+        else {
+            throw XCAssetsFileSystemRenderError.invalidOutputPath
+        }
 
-        for asset in content.assets {
+        let xcAssets = colors.map { colorModel in
+            XCAssets.Asset.colorSet(
+                name: colorModel.name.snakeCased,
+                asset: XCColorSet(
+                    color: colorModel.value,
+                    darkColor: colorModel.darkValue
+                )
+            )
+        }
+
+        try createAssetFolder(url: outputURL)
+
+        for asset in xcAssets {
             switch asset {
             case let .colorSet(name, colorSet):
-                let colorSetURL = assetFolderURL.appendingPathComponent("\(name).colorset")
+                let colorSetURL = outputURL.appendingPathComponent("\(name).colorset")
                 try create(colorSet: colorSet, at: colorSetURL)
             }
         }
     }
 
-    private func createAssetFolder() throws -> URL {
-        let assetFolderURL: URL = path.appendingPathComponent("\(content.name).xcassets")
+    private func createAssetFolder(url: URL) throws {
         try fileManager.createDirectory(
-            atPath: assetFolderURL.path,
+            atPath: url.path,
             withIntermediateDirectories: true,
             attributes: nil
         )
 
         let assetInfo = XCAssetInfo.default
-        let assetInfoURL = assetFolderURL.appendingPathComponent("Contents.json")
+        let assetInfoURL = url.appendingPathComponent("Contents.json")
         let assetInfoContent = String(
             data: try JSONEncoder().encode(assetInfo),
             encoding: .utf8
         )
 
         try fileWriter.write(content: assetInfoContent, at: assetInfoURL)
-
-        return assetFolderURL
     }
 
     private func create(colorSet: XCColorSet, at pathURL: URL) throws {

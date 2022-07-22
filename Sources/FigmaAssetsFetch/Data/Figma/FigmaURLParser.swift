@@ -10,7 +10,9 @@ public protocol FigmaURLParserType {
     func extractNodeId(from url: String) throws -> String
 }
 
-public struct FigmaURLParser {}
+public struct FigmaURLParser {
+    public init() {}
+}
 
 extension FigmaURLParser: FigmaURLParserType {
     public func extractFileId(from url: String) throws -> String {

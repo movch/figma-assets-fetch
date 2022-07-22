@@ -7,8 +7,8 @@ class FigmaPaletteParserTests: XCTestCase {
         let json = FigmaJSON.examplePalleteWithStyles
         let data = json.data(using: .utf8)
         let figmaNodes = try JSONDecoder().decode(FileNodesResponse.self, from: data!)
-        let parsedColors = try FigmaPaletteParser(figmaNodes: figmaNodes)
-            .extract()
+        let parsedColors = try FigmaPaletteParser()
+            .extract(figmaNodes: figmaNodes)
             .sorted(by: { $0.name.snakeCased < $1.name.snakeCased })
 
         assert(parsedColors.count == 5)

@@ -61,12 +61,11 @@ This command is used for template-based code generation of colors obtained from 
 This command is used to generate `*.xcassets` file with colors from Figma.
 
     figma-assets-fetch \
-            colors-xc-assets \
-            --figma-token $FIGMA_TOKEN \ #Figma API token
-            --colors-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3" \
-            --dark-colors-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=401%3A2" \
-            --asset-name $XCASSET_FILENAME \ #Optional. Name of the result *.xcassets file. Default is 'Colors'.
-            --output "$OUT_FILE_PATH" #Where to save generated file
+        colors-xc-assets \ 
+        --figma-token $FIGMA_TOKEN \ #Figma API token
+        --colors-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3" \ 
+        --dark-colors-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=401%3A2" \ #Optional
+        --output "/Users/michael/Documents/Colors.xcassets" 
 
 *Note*: light and dark colors are being matched by name, dark color name should contain light color name. E.g. `Bg / Primary` and `Dark / Bg / Primary` will be matched.
 
@@ -75,7 +74,12 @@ This command is used to generate `*.xcassets` file with colors from Figma.
 ### What is `figma-token`?
 You can generate your access token on the Figma account settings page.
 
-![](img/figma-personal-access-token.png)
+![Generating access token in Figma](img/figma-personal-access-token.png)
+
+### What is `*-node-url`?
+Node URL is a URL of frame in Figma that contains required content. To get it by click the right mouse button on frame and select *Copy link*.
+
+![Copying node URL](img/copy-node-url.png)
 
 ## Building
 The utility is written in Swift for macOS. Just clone the repository and build the project with the latest version of Xcode.

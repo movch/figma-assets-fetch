@@ -56,9 +56,15 @@ public struct NamedColor {
 
     public let name: Name
     public let value: Color
-    
-    public init(name: NamedColor.Name, value: NamedColor.Color) {
+    public let darkValue: Color?
+
+    public init(
+        name: NamedColor.Name,
+        value: NamedColor.Color,
+        darkValue: NamedColor.Color? = nil
+    ) {
         self.name = name
         self.value = value
+        self.darkValue = darkValue
     }
 }

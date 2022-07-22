@@ -10,24 +10,13 @@ class XCAssetsFileSystemRenderTests: XCTestCase {
         let json = FigmaJSON.examplePalleteWithStyles
         let data = json.data(using: .utf8)
         let figmaNodes = try JSONDecoder().decode(FileNodesResponse.self, from: data!)
-        let parsedColors = try FigmaPaletteParser(figmaNodes: figmaNodes).extract()
-        let xcAssets = XCAssets(
-            name: "Test",
-            assets: parsedColors.map {
-                .colorSet(
-                    name: $0.name.snakeCased,
-                    asset: .init(color: $0, darkColor: nil)
-                )
-            }
-        )
+        let parsedColors = try FigmaPaletteParser().extract(figmaNodes: figmaNodes)
 
         let render = XCAssetsFileSystemRender(
-            path: URL(string: "/")!,
-            content: xcAssets,
             fileManager: mockFileManager,
             fileWriter: mockFileWriter
         )
-        try render.render()
+        try render.render(colors: parsedColors, output: "/Test.xcassets")
 
         assert(mockFileManager.paths.sorted() == [
             "/Test.xcassets",
@@ -53,7 +42,7 @@ class XCAssetsFileSystemRenderTests: XCTestCase {
             value: .init(r: 0.424, g: 0.459, b: 0.49, a: 1)
         )
 
-        let colorSet = XCColorSet(color: namedColor, darkColor: nil)
+        let colorSet = XCColorSet(color: namedColor.value, darkColor: nil)
 
         let assetContent = String(
             data: try JSONEncoder().encode(colorSet),
@@ -69,15 +58,14 @@ class XCAssetsFileSystemRenderTests: XCTestCase {
     func testColorSetWithDarkColorContentGeneration() throws {
         let namedColor = NamedColor(
             name: .init(name: "Bg / Primary"),
-            value: .init(r: 0.424, g: 0.459, b: 0.49, a: 1)
+            value: .init(r: 0.424, g: 0.459, b: 0.49, a: 1),
+            darkValue: .init(r: 0.324, g: 0.359, b: 0.39, a: 1)
         )
 
-        let namedColorDark = NamedColor(
-            name: .init(name: "Dark / Bg / Primary"),
-            value: .init(r: 0.324, g: 0.359, b: 0.39, a: 1)
+        let colorSet = XCColorSet(
+            color: namedColor.value,
+            darkColor: namedColor.darkValue
         )
-
-        let colorSet = XCColorSet(color: namedColor, darkColor: namedColorDark)
 
         let assetContent = String(
             data: try JSONEncoder().encode(colorSet),

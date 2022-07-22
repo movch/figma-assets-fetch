@@ -52,8 +52,8 @@ struct ColorsCodeGen: ParsableCommand {
     }
 
     private func render(figmaNodes: FileNodesResponse) throws -> String {
-        let paletteExtractor = FigmaPaletteParser(figmaNodes: figmaNodes)
-        let paletteColors = try paletteExtractor.extract()
+        let paletteExtractor = FigmaPaletteParser()
+        let paletteColors = try paletteExtractor.extract(figmaNodes: figmaNodes)
             .sorted(by: { first, second in first.name.original < second.name.original })
 
         let context = ["colors": paletteColors]

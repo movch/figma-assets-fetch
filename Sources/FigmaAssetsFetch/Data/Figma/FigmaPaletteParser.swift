@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-enum FigmaPaletteParserError: Error {
+public enum FigmaPaletteParserError: Error {
     case colorsFrameReadError
 }
 
@@ -14,16 +14,12 @@ extension FigmaPaletteParserError: LocalizedError {
     }
 }
 
-protocol FigmaPaletteParserType {
-    func extract() throws -> [NamedColor]
+public protocol FigmaPaletteParserType {
+    func extract(figmaNodes: FileNodesResponse) throws -> [NamedColor]
 }
 
-class FigmaPaletteParser {
-    private var figmaNodes: FileNodesResponse
-
-    init(figmaNodes: FileNodesResponse) {
-        self.figmaNodes = figmaNodes
-    }
+public struct FigmaPaletteParser {
+    public init() {}
 
     private func findEllipses(in root: [FigmaDocument]) -> [FigmaDocument] {
         var result = [FigmaDocument]()
@@ -84,7 +80,7 @@ class FigmaPaletteParser {
 }
 
 extension FigmaPaletteParser: FigmaPaletteParserType {
-    func extract() throws -> [NamedColor] {
+    public func extract(figmaNodes: FileNodesResponse) throws -> [NamedColor] {
         guard let colorsNode = figmaNodes.nodes.first?.value else {
             throw FigmaPaletteParserError.colorsFrameReadError
         }
