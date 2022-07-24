@@ -8,12 +8,12 @@ struct FigmaAssetsFetch: ParsableCommand {
         abstract: "A command-line utility for code-generation from Figma assets.",
 
         // Commands can define a version for automatic '--version' support.
-        version: "3.0.0",
+        version: "3.1.0",
 
         // Pass an array to `subcommands` to set up a nested tree of subcommands.
         // With language support for type-level introspection, this could be
         // provided by automatically finding nested `ParsableCommand` types.
-        subcommands: [ColorsCodeGen.self, ColorsXCAssets.self],
+        subcommands: [ColorsCodeGen.self, ColorsXCAssets.self, ImagesXCAssets.self],
 
         // A default subcommand, when provided, is automatically selected if a
         // subcommand is not given on the command line.

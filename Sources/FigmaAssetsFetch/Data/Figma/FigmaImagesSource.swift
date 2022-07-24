@@ -71,6 +71,7 @@ public struct FigmaImagesSource: RemoteImagesSource {
                 images.append(
                     Image(
                         name: name,
+                        format: self.format,
                         urlsForScales: ["1x": imageDict.value]
                     )
                 )

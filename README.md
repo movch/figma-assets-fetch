@@ -5,16 +5,23 @@ A macOS command-line utility for template-based code generation from Figma asset
 ## What can it do?
 
 - It can perform template based code generation from Figma frame with colors;
-- It can generate `*.xcassets` file with color set obtained from Figma frame.
+- It can generate `*.xcassets` file with color set obtained from Figma frame;
+- It can generate `*.xcassets` file with image set obtained from specifed Figma frame.
 
 ## Getting Started
 
 ### Figma part
+
+#### Colors
 1. Prepare your color palette in a separate frame in your Figma file. It should contain a certain number of ellipses, each of which must be filled with the appropriate color. See the [example file](https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=0%3A1).
 ![Figma palette example](img/figma-palette-example.png)
 
 1. Every color you use in your palette should have a style with some name. Alternatively you can set the name of the ellipse filled with that color (if the style is not set, the utility will parse color name from the ellipse name).
 ![Creating style name in Figma](img/creating-style-name-in-figma.png)
+
+#### Images
+1. Prepare a separate frame with images. Note that the script will parse all child nodes as a single image, ommitting only text nodes.
+![Figma images frame example](img/figma-images-frame.png)
 
 ### Template part
 The template file is just a [Stencil](https://github.com/stencilproject/Stencil) template. All colors obtained from Figma, are being passed to template as an array of objects. Refer to [NamedColor](https://github.com/movch/figma-assets-fetch/blob/main/Sources/FigmaAssetsFetch/Domain/Entities/Colors/NamedColor.swift) to gain understanding about such objects content.
@@ -69,6 +76,15 @@ This command is used to generate `*.xcassets` file with colors from Figma.
         --output "/Users/michael/Documents/Colors.xcassets" 
 
 *Note*: light and dark colors are being matched by name, dark color name should contain light color name. E.g. `Bg / Primary` and `Dark / Bg / Primary` will be matched.
+
+#### `images-xc-assets` command
+This command is used to generate `*.xcassets` file with images obtained from specified Figma frame.
+
+    figma-assets-fetch \ 
+        images-xc-assets \
+        --figma-token $FIGMA_TOKEN \ #Figma API token
+        --images-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=508%3A45" \ 
+        --output "/Users/michael/Documents/Icons.xcassets"
 
 ## F.A.Q
 

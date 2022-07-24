@@ -3,6 +3,7 @@ import Foundation
 public struct XCAssets {
     public enum Asset {
         case colorSet(name: String, asset: XCColorSet)
+        case imageSet(name: String, asset: XCImageSet)
     }
 
     public let name: String
