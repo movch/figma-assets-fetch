@@ -10,6 +10,10 @@
 
 import Foundation
 
+public struct FigmaImages: Codable {
+    let images: [String: String]
+}
+
 /// GET /v1/files/:key
 ///
 /// > Description
@@ -570,7 +574,7 @@ public struct TypeStyle: Codable {
     /// Font family of text (standard name)
     public let fontFamily: String
     /// PostScript font name
-    public let fontPostScriptName: String
+    public let fontPostScriptName: String?
     /// Font size in px
     public let fontSize: Double
     /// Numeric font weight
@@ -621,6 +625,7 @@ public enum NodeType: String, Codable {
     case star = "STAR"
     case text = "TEXT"
     case vector = "VECTOR"
+    case booleanOperation = "BOOLEAN_OPERATION"
 }
 
 /// Node Properties

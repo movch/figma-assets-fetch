@@ -17,7 +17,7 @@ A macOS command-line utility for template-based code generation from Figma asset
 ![Creating style name in Figma](img/creating-style-name-in-figma.png)
 
 ### Template part
-The template file is just a [Stencil](https://github.com/stencilproject/Stencil) template. All colors obtained from Figma, are being passed to template as an array of objects. Refer to [NamedColor](https://github.com/movch/figma-assets-fetch/blob/main/Sources/FigmaAssetsFetch/Domain/Entities/NamedColor.swift) to gain understanding about such objects content.
+The template file is just a [Stencil](https://github.com/stencilproject/Stencil) template. All colors obtained from Figma, are being passed to template as an array of objects. Refer to [NamedColor](https://github.com/movch/figma-assets-fetch/blob/main/Sources/FigmaAssetsFetch/Domain/Entities/Colors/NamedColor.swift) to gain understanding about such objects content.
 
 Example template:
 

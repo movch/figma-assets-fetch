@@ -12,7 +12,10 @@ class GetRemoteColorsUseCaseTests: XCTestCase {
     }
 
     func testGetColorsAndRenderToXCAssets() throws {
-        let figmaAPIMock = FigmaAPIMock(mockedJSON: FigmaJSON.examplePalleteWithStyles)
+        let figmaAPIMock = FigmaAPIMock(
+            mockedFileRequestJSON: FigmaJSON.examplePalleteWithStyles,
+            mockedImagesRequestJSON: ""
+        )
         let colorsSource = FigmaColorsSource(
             colorsURLPath: "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3",
             figmaAPI: figmaAPIMock
@@ -73,7 +76,10 @@ class GetRemoteColorsUseCaseTests: XCTestCase {
     }
 
     func testGetColorsAndRenderToStencilTemplate() throws {
-        let figmaAPIMock = FigmaAPIMock(mockedJSON: FigmaJSON.examplePalleteWithStyles)
+        let figmaAPIMock = FigmaAPIMock(
+            mockedFileRequestJSON: FigmaJSON.examplePalleteWithStyles,
+            mockedImagesRequestJSON: FigmaJSON.exampleImagesResponse
+        )
         let colorsSource = FigmaColorsSource(
             colorsURLPath: "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3",
             figmaAPI: figmaAPIMock

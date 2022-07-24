@@ -12,7 +12,10 @@ class FigmaColorsSourceTests: XCTestCase {
     }
 
     func testColorsFetch() throws {
-        let figmaAPIMock = FigmaAPIMock(mockedJSON: FigmaJSON.examplePalleteWithStyles)
+        let figmaAPIMock = FigmaAPIMock(
+            mockedFileRequestJSON: FigmaJSON.examplePalleteWithStyles,
+            mockedImagesRequestJSON: FigmaJSON.exampleImagesResponse
+        )
         let colorsSource = FigmaColorsSource(
             colorsURLPath: "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3",
             darkColorsURLPath: "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=1%3A3",
@@ -40,7 +43,7 @@ class FigmaColorsSourceTests: XCTestCase {
 
         waitForExpectations(timeout: 10)
 
-        XCTAssertNil(error)
+        assert(error == nil)
         assert(colors.count == 5)
         assert(
             colors
