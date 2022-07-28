@@ -85,6 +85,8 @@ This command is used to generate `*.xcassets` file with images obtained from spe
         --figma-token $FIGMA_TOKEN \ #Figma API token
         --images-node-url "https://www.figma.com/file/1z5n1txr0nz7qMVzcS3Oif/figma-assets-fetch-palette-example?node-id=508%3A45" \ 
         --output "/Users/michael/Documents/Icons.xcassets"
+        
+*Note*: Only export to `*.pdf` image format is currently supported.
 
 ## F.A.Q
 
