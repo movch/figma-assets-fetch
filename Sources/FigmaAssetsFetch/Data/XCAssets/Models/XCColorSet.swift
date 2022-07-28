@@ -7,8 +7,8 @@ public struct XCColorSet: Codable {
     let info: XCAssetInfo
 
     init(
-        color: NamedColor.Color,
-        darkColor: NamedColor.Color?
+        color: ColorAsset.Color,
+        darkColor: ColorAsset.Color?
     ) {
         var colors: [XCColorElement] = [
             XCColorElement(colorModel: color),
@@ -31,7 +31,7 @@ public struct XCColorSet: Codable {
 // MARK: - XCColorElement
 
 public struct XCColorElement: Codable {
-    init(colorModel: NamedColor.Color, appearances: [Appearance]? = nil) {
+    init(colorModel: ColorAsset.Color, appearances: [Appearance]? = nil) {
         color = XCColor(with: colorModel)
         idiom = "universal"
         self.appearances = appearances
@@ -66,7 +66,7 @@ public struct XCColor: Codable {
     let colorSpace: String
     let components: XCColorComponents
 
-    init(with color: NamedColor.Color) {
+    init(with color: ColorAsset.Color) {
         colorSpace = "srgb"
         components = XCColorComponents(
             alpha: "\(color.a)",

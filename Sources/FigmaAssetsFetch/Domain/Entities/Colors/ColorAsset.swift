@@ -1,25 +1,7 @@
 import Foundation
 
 /// Color object model, that will be passed to Stencil template
-public struct NamedColor {
-    /// Color style name info
-    public struct Name {
-        /// Name that was imported from Figma as is
-        public let original: String
-
-        /// `name` converted to camel case
-        public let camelCased: String
-
-        /// `name` converted to snake case
-        public let snakeCased: String
-
-        public init(name: String) {
-            original = name
-            camelCased = name.camelCased
-            snakeCased = name.snakeCased
-        }
-    }
-
+public struct ColorAsset {
     /// Color style RGBA color info
     public struct Color {
         /// Alpha channel value, between 0 and 1
@@ -59,9 +41,9 @@ public struct NamedColor {
     public let darkValue: Color?
 
     public init(
-        name: NamedColor.Name,
-        value: NamedColor.Color,
-        darkValue: NamedColor.Color? = nil
+        name: Name,
+        value: ColorAsset.Color,
+        darkValue: ColorAsset.Color? = nil
     ) {
         self.name = name
         self.value = value

@@ -19,21 +19,21 @@ public struct XCAssetsFileSystemRender {
     private let fileManager: FileManagerType
     private let fileWriter: FileWriterType
     private let fileDownloader: FileDownloader
-    
+
     public func render(assets: [XCAssets.Asset], outputURL: URL) throws {
         for asset in assets {
             switch asset {
             case let .colorSet(name, colorSet):
                 let colorSetURL = outputURL.appendingPathComponent("\(name).colorset")
                 try create(colorSet: colorSet, at: colorSetURL)
-                
+
             case let .imageSet(name, imageSet):
                 let imageSetURL = outputURL.appendingPathComponent("\(name).imageset")
                 try create(imageSet: imageSet, at: imageSetURL)
             }
         }
     }
-    
+
     private func createAssetFolder(url: URL) throws {
         try fileManager.createDirectory(
             atPath: url.path,
@@ -66,7 +66,7 @@ public struct XCAssetsFileSystemRender {
 
         try fileWriter.write(content: colorSetInfoContent, at: colorSetInfoURL)
     }
-    
+
     private func create(imageSet: XCImageSet, at pathURL: URL) throws {
         try fileManager.createDirectory(
             atPath: pathURL.path,
@@ -79,13 +79,13 @@ public struct XCAssetsFileSystemRender {
             data: try JSONEncoder().encode(imageSet),
             encoding: .utf8
         )
-        
+
         for image in imageSet.images {
             guard let imageURL = URL(string: image.url)
             else {
                 throw XCAssetsFileSystemRenderError.invalidImageURL
             }
-            
+
             try fileDownloader.download(
                 from: imageURL,
                 to: pathURL.appendingPathComponent(image.filename)
@@ -97,7 +97,7 @@ public struct XCAssetsFileSystemRender {
 }
 
 extension XCAssetsFileSystemRender: ColorsRender {
-    public func render(colors: [NamedColor], output: String) throws {
+    public func render(colors: [ColorAsset], output: String) throws {
         guard let outputURL = URL(string: "file://\(output)"),
               outputURL.lastPathComponent.contains(".xcassets")
         else {
@@ -120,20 +120,20 @@ extension XCAssetsFileSystemRender: ColorsRender {
 }
 
 extension XCAssetsFileSystemRender: ImagesRender {
-    public func render(images: [Image], output: String) throws {
+    public func render(images: [ImageAsset], output: String) throws {
         guard let outputURL = URL(string: "file://\(output)"),
               outputURL.lastPathComponent.contains(".xcassets")
         else {
             throw XCAssetsFileSystemRenderError.invalidOutputPath
         }
-        
+
         let xcAssets = images.map { image in
             XCAssets.Asset.imageSet(
-                name: image.name,
+                name: image.name.snakeCased,
                 asset: XCImageSet(image: image)
             )
         }
-        
+
         try createAssetFolder(url: outputURL)
         try render(assets: xcAssets, outputURL: outputURL)
     }

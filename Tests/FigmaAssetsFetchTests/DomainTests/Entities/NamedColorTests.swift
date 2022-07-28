@@ -4,21 +4,21 @@ import XCTest
 
 class NamedColorTests: XCTestCase {
     func testSnakeCaseNameGeneration() {
-        let namedColor = NamedColor(
+        let namedColor = ColorAsset(
             name: .init(name: "Bg / Primary"),
             value: .init(r: 0, g: 0, b: 0, a: 0)
         )
 
         assert(namedColor.name.snakeCased == "bg_primary")
 
-        let namedColor2 = NamedColor(
+        let namedColor2 = ColorAsset(
             name: .init(name: "Bg/Primary"),
             value: .init(r: 0, g: 0, b: 0, a: 0)
         )
 
         assert(namedColor2.name.snakeCased == "bg_primary")
 
-        let namedColor3 = NamedColor(
+        let namedColor3 = ColorAsset(
             name: .init(name: "BgPrimary"),
             value: .init(r: 0, g: 0, b: 0, a: 0)
         )
@@ -27,7 +27,7 @@ class NamedColorTests: XCTestCase {
     }
 
     func testCamelCaseNameGeneration() {
-        let namedColor = NamedColor(
+        let namedColor = ColorAsset(
             name: .init(name: "Bg / Primary"),
             value: .init(r: 0, g: 0, b: 0, a: 0)
         )
@@ -36,7 +36,7 @@ class NamedColorTests: XCTestCase {
     }
 
     func testColorHexValue() {
-        let namedColor = NamedColor(
+        let namedColor = ColorAsset(
             name: .init(name: "Bg / Primary"),
             value: .init(r: 0.424, g: 0.459, b: 0.49, a: 1)
         )
@@ -45,7 +45,7 @@ class NamedColorTests: XCTestCase {
     }
 
     func testColorHexWithAlphaValue() {
-        let namedColor = NamedColor(
+        let namedColor = ColorAsset(
             name: .init(name: "Bg / Primary"),
             value: .init(r: 0.424, g: 0.459, b: 0.49, a: 0.4)
         )

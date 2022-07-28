@@ -22,7 +22,7 @@ class FigmaColorsSourceTests: XCTestCase {
             figmaAPI: figmaAPIMock
         )
 
-        var colors = [NamedColor]()
+        var colors = [ColorAsset]()
         var error: Error?
         let expectation = self.expectation(description: "Figma colors source mock")
 

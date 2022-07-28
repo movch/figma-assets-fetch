@@ -9,7 +9,7 @@ class TemplateFileSystemRenderTests: XCTestCase {
             templatePath: Bundle.module.url(forResource: "TestTemplate", withExtension: "stencil")!.path,
             fileWriter: mockFileWriter
         )
-        let namedColor = NamedColor(
+        let namedColor = ColorAsset(
             name: .init(name: "Bg / Primary"),
             value: .init(r: 0.424, g: 0.459, b: 0.49, a: 1)
         )

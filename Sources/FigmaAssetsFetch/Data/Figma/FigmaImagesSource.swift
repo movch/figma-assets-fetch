@@ -27,7 +27,7 @@ public struct FigmaImagesSource: RemoteImagesSource {
         self.figmaURLParser = figmaURLParser
     }
 
-    public func fetchImages() -> AnyPublisher<[Image], Error> {
+    public func fetchImages() -> AnyPublisher<[ImageAsset], Error> {
         guard let figmaFileId = try? figmaURLParser.extractFileId(from: imagesFrameURLPath),
               let imagesNodeId = try? figmaURLParser.extractNodeId(from: imagesFrameURLPath)
         else {
@@ -61,7 +61,7 @@ public struct FigmaImagesSource: RemoteImagesSource {
             )
         }
         .tryMap { figmaImages in
-            var images: [Image] = []
+            var images: [ImageAsset] = []
 
             for imageDict in figmaImages.images {
                 guard let name = imagesToRequest[imageDict.key] else {
@@ -69,8 +69,8 @@ public struct FigmaImagesSource: RemoteImagesSource {
                 }
 
                 images.append(
-                    Image(
-                        name: name,
+                    ImageAsset(
+                        name: Name(name: name),
                         format: self.format,
                         urlsForScales: ["1x": imageDict.value]
                     )

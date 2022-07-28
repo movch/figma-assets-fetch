@@ -26,7 +26,7 @@ public struct FigmaColorsSource: RemoteColorsSource {
         self.figmaPalleteParser = figmaPalleteParser
     }
 
-    public func fetchColors() -> AnyPublisher<[NamedColor], Error> {
+    public func fetchColors() -> AnyPublisher<[ColorAsset], Error> {
         guard let figmaFileId = try? figmaURLParser.extractFileId(from: colorsURLPath),
               let colorsNodeId = try? figmaURLParser.extractNodeId(from: colorsURLPath)
         else {
@@ -53,7 +53,7 @@ public struct FigmaColorsSource: RemoteColorsSource {
                 let namedColors = try figmaPalleteParser.extract(figmaNodes: colorsFigmaNodes)
                 let darkNamedColors = (try? figmaPalleteParser.extract(figmaNodes: darkColorsFigmaNodes)) ?? []
                 return namedColors.map { namedColor in
-                    NamedColor(
+                    ColorAsset(
                         name: namedColor.name,
                         value: namedColor.value,
                         darkValue: darkNamedColors.first(where: { darkNamedColor in

@@ -15,7 +15,7 @@ extension FigmaPaletteParserError: LocalizedError {
 }
 
 public protocol FigmaPaletteParserType {
-    func extract(figmaNodes: FileNodesResponse) throws -> [NamedColor]
+    func extract(figmaNodes: FileNodesResponse) throws -> [ColorAsset]
 }
 
 public struct FigmaPaletteParser {
@@ -37,7 +37,7 @@ public struct FigmaPaletteParser {
         return result
     }
 
-    private func process(_ ellipse: FigmaDocument, with styles: [String: Style]) -> NamedColor? {
+    private func process(_ ellipse: FigmaDocument, with styles: [String: Style]) -> ColorAsset? {
         guard let color = ellipse.fills?.first?.color else {
             print("Failed to parse ellipse: \(ellipse.id) \(ellipse.name)")
             return nil
@@ -46,9 +46,9 @@ public struct FigmaPaletteParser {
         let styleName: String = extractStyleName(from: ellipse, with: styles)
         let alphaValue: Double = extractAlphaValue(from: ellipse, and: color)
 
-        let extractedColor = NamedColor(
-            name: .init(name: styleName),
-            value: .init(
+        let extractedColor = ColorAsset(
+            name: Name(name: styleName),
+            value: ColorAsset.Color(
                 r: color.r,
                 g: color.g,
                 b: color.b,
@@ -80,7 +80,7 @@ public struct FigmaPaletteParser {
 }
 
 extension FigmaPaletteParser: FigmaPaletteParserType {
-    public func extract(figmaNodes: FileNodesResponse) throws -> [NamedColor] {
+    public func extract(figmaNodes: FileNodesResponse) throws -> [ColorAsset] {
         guard let colorsNode = figmaNodes.nodes.first?.value else {
             throw FigmaPaletteParserError.colorsFrameReadError
         }
@@ -89,7 +89,7 @@ extension FigmaPaletteParser: FigmaPaletteParserType {
 
         let ellipses = findEllipses(in: colorsFrameChildren)
         let styles = colorsNode.styles
-        let paletteColors: [NamedColor] = ellipses.compactMap { ellipse in
+        let paletteColors: [ColorAsset] = ellipses.compactMap { ellipse in
             process(ellipse, with: styles)
         }
 

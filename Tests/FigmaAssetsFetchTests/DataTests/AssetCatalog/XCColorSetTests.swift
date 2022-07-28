@@ -4,7 +4,7 @@ import XCTest
 
 class XCColorSetTests: XCTestCase {
     func testColorSetContentGeneration() throws {
-        let namedColor = NamedColor(
+        let namedColor = ColorAsset(
             name: .init(name: "Bg / Primary"),
             value: .init(r: 0.424, g: 0.459, b: 0.49, a: 1)
         )
@@ -23,7 +23,7 @@ class XCColorSetTests: XCTestCase {
     }
 
     func testColorSetWithDarkColorContentGeneration() throws {
-        let namedColor = NamedColor(
+        let namedColor = ColorAsset(
             name: .init(name: "Bg / Primary"),
             value: .init(r: 0.424, g: 0.459, b: 0.49, a: 1),
             darkValue: .init(r: 0.324, g: 0.359, b: 0.39, a: 1)

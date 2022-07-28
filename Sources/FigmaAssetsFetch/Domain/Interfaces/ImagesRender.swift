@@ -1,3 +1,3 @@
 public protocol ImagesRender {
-    func render(images: [Image], output: String) throws
+    func render(images: [ImageAsset], output: String) throws
 }

@@ -23,7 +23,7 @@ class FigmaImagesSourceTests: XCTestCase {
             figmaAPI: figmaAPIMock
         )
 
-        var images = [Image]()
+        var images = [ImageAsset]()
         var error: Error?
         let expectation = self.expectation(description: "Figma colors source mock")
 
@@ -46,6 +46,6 @@ class FigmaImagesSourceTests: XCTestCase {
 
         assert(error == nil)
         assert(images.count == 2)
-        assert(images.map { $0.name }.sorted() == ["Add_round_fill", "Date_range_fill"])
+        assert(images.map { $0.name.original }.sorted() == ["Add_round_fill", "Date_range_fill"])
     }
 }

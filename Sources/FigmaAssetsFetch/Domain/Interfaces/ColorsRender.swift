@@ -1,3 +1,3 @@
 public protocol ColorsRender {
-    func render(colors: [NamedColor], output: String) throws
+    func render(colors: [ColorAsset], output: String) throws
 }

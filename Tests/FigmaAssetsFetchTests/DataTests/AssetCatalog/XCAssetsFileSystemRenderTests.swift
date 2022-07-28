@@ -35,17 +35,17 @@ class XCAssetsFileSystemRenderTests: XCTestCase {
             "/Test.xcassets/bg_secondary.colorset/Contents.json",
         ].sorted())
     }
-    
+
     func testXCAssetsImageSetFilePathGeneration() throws {
         let mockFileManager = FileManagerMock()
         let mockFileWriter = FileWriterMock()
         let mockFileDownloader = FileDownloaderMock()
 
-        let images = [Image(
-            name: "test1",
+        let images = [ImageAsset(
+            name: Name(name: "test1"),
             format: .pdf,
             urlsForScales: [
-                "x1":"https://figma-alpha-api.s3.us-west-2.amazonaws.com/images/751fd453-404f-48e1-8b28-dc341ce3d30e"
+                "x1": "https://figma-alpha-api.s3.us-west-2.amazonaws.com/images/751fd453-404f-48e1-8b28-dc341ce3d30e",
             ]
         )]
 

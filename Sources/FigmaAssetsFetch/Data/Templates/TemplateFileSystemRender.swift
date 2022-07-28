@@ -21,7 +21,7 @@ public struct TemplateFileSystemRender {
 }
 
 extension TemplateFileSystemRender: ColorsRender {
-    public func render(colors: [NamedColor], output: String) throws {
+    public func render(colors: [ColorAsset], output: String) throws {
         guard let templateURL = URL(string: "file://\(templatePath)"),
               templateURL.lastPathComponent.contains(".stencil")
         else {
