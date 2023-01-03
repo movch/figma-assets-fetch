@@ -1,15 +1,14 @@
-import Combine
 import Foundation
 
 public enum FigmaAPIError: LocalizedError {
     case invalidFileURL
     case invalidJSON
+    case invalidStatusCode
 }
 
 public protocol FigmaAPIType {
-    func requestFile(with id: String, nodeId: String) -> AnyPublisher<FileNodesResponse, Error>
-    func requestImagesLinks(fileId: String, nodeIds: [String], format: ImageFormat, scale: ImageScale)
-        -> AnyPublisher<FigmaImages, Error>
+    func requestFile(with id: String, nodeId: String) async throws -> FileNodesResponse
+    func requestImagesLinks(fileId: String, nodeIds: [String], format: ImageFormat, scale: ImageScale) async throws -> FigmaImages
 }
 
 public struct FigmaAPI {
@@ -23,21 +22,24 @@ public struct FigmaAPI {
 }
 
 extension FigmaAPI: FigmaAPIType {
-    public func requestFile(with id: String, nodeId: String) -> AnyPublisher<FileNodesResponse, Error> {
+    public func requestFile(with id: String, nodeId: String) async throws -> FileNodesResponse {
         let path = "\(baseAPIPath)/files/\(id)/nodes?ids=\(nodeId)"
-
         guard let url = URL(string: path) else {
-            return Fail(error: FigmaAPIError.invalidFileURL).eraseToAnyPublisher()
+            throw FigmaAPIError.invalidFileURL
         }
-
+        
         var urlRequest = URLRequest(url: url)
         urlRequest.addValue(token, forHTTPHeaderField: "X-Figma-Token")
-
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { $0 as Error }
-            .map { $0.data }
-            .decode(type: FileNodesResponse.self, decoder: JSONDecoder())
-            .eraseToAnyPublisher()
+        
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+        
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw FigmaAPIError.invalidStatusCode
+        }
+        
+        let fileNodesResponse = try JSONDecoder().decode(FileNodesResponse.self, from: data)
+        
+        return fileNodesResponse
     }
 
     public func requestImagesLinks(
@@ -45,22 +47,26 @@ extension FigmaAPI: FigmaAPIType {
         nodeIds: [String],
         format: ImageFormat,
         scale: ImageScale
-    ) -> AnyPublisher<FigmaImages, Error> {
+    ) async throws -> FigmaImages {
         let path =
             "\(baseAPIPath)/images/\(fileId)?ids=\(nodeIds.joined(separator: ","))&format=\(format.rawValue)&scale=\(scale.rawValue)"
 
         guard let url = URL(string: path) else {
-            return Fail(error: FigmaAPIError.invalidFileURL).eraseToAnyPublisher()
+            throw FigmaAPIError.invalidFileURL
         }
 
         var urlRequest = URLRequest(url: url)
         urlRequest.addValue(token, forHTTPHeaderField: "X-Figma-Token")
 
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { $0 as Error }
-            .map { $0.data }
-            .decode(type: FigmaImages.self, decoder: JSONDecoder())
-            .eraseToAnyPublisher()
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+        
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw FigmaAPIError.invalidStatusCode
+        }
+        
+        let fileNodesResponse = try JSONDecoder().decode(FigmaImages.self, from: data)
+        
+        return fileNodesResponse
     }
 }
 
@@ -75,23 +81,14 @@ public struct FigmaAPIMock: FigmaAPIType {
         self.mockedFileRequestJSON = mockedFileRequestJSON
         self.mockedImagesRequestJSON = mockedImagesRequestJSON
     }
-
-    public func requestFile(with id: String, nodeId: String) -> AnyPublisher<FileNodesResponse, Error> {
+    
+    public func requestFile(with id: String, nodeId: String) async throws -> FileNodesResponse {
         guard let data = mockedFileRequestJSON.data(using: .utf8)
         else {
-            return Fail(error: FigmaAPIError.invalidJSON)
-                .eraseToAnyPublisher()
+            throw FigmaAPIError.invalidJSON
         }
 
-        do {
-            let figmaNodes = try JSONDecoder().decode(FileNodesResponse.self, from: data)
-            return Just(figmaNodes)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        } catch {
-            return Fail(error: error)
-                .eraseToAnyPublisher()
-        }
+        return try JSONDecoder().decode(FileNodesResponse.self, from: data)
     }
 
     public func requestImagesLinks(
@@ -99,16 +96,12 @@ public struct FigmaAPIMock: FigmaAPIType {
         nodeIds: [String],
         format: ImageFormat,
         scale: ImageScale
-    ) -> AnyPublisher<FigmaImages, Error> {
-        guard let data = mockedImagesRequestJSON.data(using: .utf8),
-              let figmaImages = try? JSONDecoder().decode(FigmaImages.self, from: data)
+    ) async throws -> FigmaImages {
+        guard let data = mockedImagesRequestJSON.data(using: .utf8)
         else {
-            return Fail(error: FigmaAPIError.invalidJSON)
-                .eraseToAnyPublisher()
+            throw FigmaAPIError.invalidJSON
         }
 
-        return Just(figmaImages)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+        return try JSONDecoder().decode(FigmaImages.self, from: data)
     }
 }

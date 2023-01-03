@@ -1,5 +1,3 @@
-import Combine
-
 public enum FigmaImagesSourceError: Error {
     case incorrectFigmaFrameURL
     case imagesFrameReadError
@@ -27,58 +25,52 @@ public struct FigmaImagesSource: RemoteImagesSource {
         self.figmaURLParser = figmaURLParser
     }
 
-    public func fetchImages() -> AnyPublisher<[ImageAsset], Error> {
+    public func fetchImages() async throws -> [ImageAsset] {
         guard let figmaFileId = try? figmaURLParser.extractFileId(from: imagesFrameURLPath),
               let imagesNodeId = try? figmaURLParser.extractNodeId(from: imagesFrameURLPath)
         else {
-            return Fail(error: FigmaImagesSourceError.incorrectFigmaFrameURL)
-                .eraseToAnyPublisher()
+            throw FigmaImagesSourceError.incorrectFigmaFrameURL
         }
-
-        let frameRequest = figmaAPI.requestFile(with: figmaFileId, nodeId: imagesNodeId)
-
+        
+        let figmaNodes = try await figmaAPI.requestFile(with: figmaFileId, nodeId: imagesNodeId)
+        
+        guard let imagesNode = figmaNodes.nodes.first?.value else {
+            throw FigmaImagesSourceError.imagesFrameReadError
+        }
+        
+        let imagesFrameChildren = imagesNode.document.children
         var imagesToRequest: [String: String] = [:]
-        return frameRequest.flatMap { figmaNodes -> AnyPublisher<FigmaImages, Error> in
-            guard let imagesNode = figmaNodes.nodes.first?.value else {
-                return Fail(error: FigmaImagesSourceError.imagesFrameReadError)
-                    .eraseToAnyPublisher()
+        for child in imagesFrameChildren {
+            if child.type == .text {
+                continue
             }
-
-            let imagesFrameChildren = imagesNode.document.children
-            for child in imagesFrameChildren {
-                if child.type == .text {
-                    continue
-                }
-
-                imagesToRequest[child.id] = child.name
+            
+            imagesToRequest[child.id] = child.name
+        }
+        
+        let figmaImages = try await self.figmaAPI.requestImagesLinks(
+            fileId: figmaFileId,
+            nodeIds: imagesToRequest.keys.map { String($0) },
+            format: self.format,
+            scale: .x1
+        )
+        
+        var images: [ImageAsset] = []
+        
+        for imageDict in figmaImages.images {
+            guard let name = imagesToRequest[imageDict.key] else {
+                continue
             }
-
-            return self.figmaAPI.requestImagesLinks(
-                fileId: figmaFileId,
-                nodeIds: imagesToRequest.keys.map { String($0) },
-                format: self.format,
-                scale: .x1
+            
+            images.append(
+                ImageAsset(
+                    name: Name(name: name),
+                    format: self.format,
+                    urlsForScales: ["1x": imageDict.value]
+                )
             )
         }
-        .tryMap { figmaImages in
-            var images: [ImageAsset] = []
-
-            for imageDict in figmaImages.images {
-                guard let name = imagesToRequest[imageDict.key] else {
-                    continue
-                }
-
-                images.append(
-                    ImageAsset(
-                        name: Name(name: name),
-                        format: self.format,
-                        urlsForScales: ["1x": imageDict.value]
-                    )
-                )
-            }
-
-            return images
-        }
-        .eraseToAnyPublisher()
+        
+        return images
     }
 }

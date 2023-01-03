@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 public struct GetRemoteColorsUseCase {
@@ -6,12 +5,8 @@ public struct GetRemoteColorsUseCase {
     let render: ColorsRender
     let output: String
 
-    func run() -> AnyPublisher<Void, Error> {
-        return source.fetchColors()
-            .tryMap { namedColors in
-                try render.render(colors: namedColors, output: self.output)
-                return ()
-            }
-            .eraseToAnyPublisher()
+    func run() async throws {
+        let colorAssets = try await source.fetchColors()
+        try render.render(colors: colorAssets, output: self.output)
     }
 }

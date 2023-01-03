@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "FigmaAssetsFetch",
-    platforms: [.macOS(.v10_15)],
+    platforms: [.macOS(.v12)],
     products: [
         .executable(name: "figma-assets-fetch", targets: ["FigmaAssetsFetch"]),
     ],
