@@ -1,6 +1,7 @@
 import ArgumentParser
 import Darwin
 import Foundation
+import FigmaAssetsFetch
 
 struct ColorsXCAssets: ParsableCommand {
     static var configuration = CommandConfiguration(

@@ -1,35 +1,32 @@
 import ArgumentParser
 import Darwin
 import Foundation
-import PathKit
-import Stencil
+import FigmaAssetsFetch
 
-struct ColorsCodeGen: ParsableCommand {
+struct ImagesXCAssets: ParsableCommand {
     static var configuration = CommandConfiguration(
-        abstract: "Download colors information from Figma file and render them to provided Stencil template"
+        abstract: "Download images from Figma file and render them to *.xcassets file"
     )
 
     @OptionGroup
     var options: Options
-
-    @OptionGroup
-    var colorsOptions: ColorsOptions
-
+    
     @Option(
-        help: "Path to Stencil template file to render. It should have `*.stencil` extension."
+        help: "Figma frame url that contains a collection of images."
     )
-    var templatePath: String = ""
+    var imagesNodeURL: String = ""
+
 
     func run() {
-        let source = FigmaColorsSource(
-            colorsURLPath: colorsOptions.colorsNodeURL,
-            darkColorsURLPath: colorsOptions.darkColorsNodeURL,
+        let source = FigmaImagesSource(
+            imagesFrameURLPath: imagesNodeURL,
+            format: .pdf,
+            scales: [.x1],
             figmaAPI: FigmaAPI(token: options.figmaToken)
         )
+        let render = XCAssetsFileSystemRender()
 
-        let render = TemplateFileSystemRender(templatePath: templatePath)
-
-        let useCase = GetRemoteColorsUseCase(
+        let useCase = GetRemoteImagesUseCase(
             source: source,
             render: render,
             output: options.output
