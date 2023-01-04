@@ -6,6 +6,10 @@ public enum XCAssetsFileSystemRenderError: Error {
 }
 
 public struct XCAssetsFileSystemRender {
+    private let fileManager: FileManagerType
+    private let fileWriter: FileWriterType
+    private let fileDownloader: FileDownloader
+    
     public init(
         fileManager: FileManagerType = FileManager.default,
         fileWriter: FileWriterType = FileWriter(),
@@ -15,10 +19,6 @@ public struct XCAssetsFileSystemRender {
         self.fileWriter = fileWriter
         self.fileDownloader = fileDownloader
     }
-
-    private let fileManager: FileManagerType
-    private let fileWriter: FileWriterType
-    private let fileDownloader: FileDownloader
 
     public func render(assets: [XCAssets.Asset], outputURL: URL) throws {
         for asset in assets {
