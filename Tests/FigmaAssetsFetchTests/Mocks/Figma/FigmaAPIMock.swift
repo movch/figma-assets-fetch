@@ -16,7 +16,7 @@ public struct FigmaAPIMock: FigmaAPIType {
     public func requestFile(with id: String, nodeId: String) async throws -> FileNodesResponse {
         guard let data = mockedFileRequestJSON.data(using: .utf8)
         else {
-            throw FigmaAPIError.invalidJSON
+            throw RequestError.decode
         }
 
         return try JSONDecoder().decode(FileNodesResponse.self, from: data)
@@ -30,7 +30,7 @@ public struct FigmaAPIMock: FigmaAPIType {
     ) async throws -> FigmaImages {
         guard let data = mockedImagesRequestJSON.data(using: .utf8)
         else {
-            throw FigmaAPIError.invalidJSON
+            throw RequestError.decode
         }
 
         return try JSONDecoder().decode(FigmaImages.self, from: data)
