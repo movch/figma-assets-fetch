@@ -16,7 +16,7 @@ struct FigmaAssetsFetch: ParsableCommand {
         subcommands: [
             ColorsCodeGen.self,
             ColorsXCAssets.self,
-            ImagesXCAssets.self
+            ImagesXCAssets.self,
         ],
 
         // A default subcommand, when provided, is automatically selected if a

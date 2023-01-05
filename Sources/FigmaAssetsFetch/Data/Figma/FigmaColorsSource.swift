@@ -23,15 +23,18 @@ public struct FigmaColorsSource: RemoteColorsSource {
         self.figmaURLParser = figmaURLParser
         self.figmaPalleteParser = figmaPalleteParser
     }
-    
+
     public func fetchColors() async throws -> [ColorAsset] {
         guard let figmaFileId = try? figmaURLParser.extractFileId(from: colorsURLPath),
               let colorsNodeId = try? figmaURLParser.extractNodeId(from: colorsURLPath)
         else {
             throw FigmaColorsSourceError.incorrectFigmaFrameURL
         }
-        
-        async let colorsFigmaNodes: FileNodesResponse = try figmaAPI.requestFile(with: figmaFileId, nodeId: colorsNodeId)
+
+        async let colorsFigmaNodes: FileNodesResponse = try figmaAPI.requestFile(
+            with: figmaFileId,
+            nodeId: colorsNodeId
+        )
         async let darkColorsFigmaNodes: FileNodesResponse = {
             guard let darkColorsNodeURL = self.darkColorsURLPath,
                   let darkColorsFileId = try? figmaURLParser.extractFileId(from: darkColorsNodeURL),
@@ -42,7 +45,7 @@ public struct FigmaColorsSource: RemoteColorsSource {
 
             return try await figmaAPI.requestFile(with: darkColorsFileId, nodeId: darkColorsNodeId)
         }()
-        
+
         let namedColors = try await figmaPalleteParser.extract(figmaNodes: colorsFigmaNodes)
         let darkNamedColors = (try? await figmaPalleteParser.extract(figmaNodes: darkColorsFigmaNodes)) ?? []
 

@@ -12,7 +12,7 @@ public struct FigmaAPIMock: FigmaAPIType {
         self.mockedFileRequestJSON = mockedFileRequestJSON
         self.mockedImagesRequestJSON = mockedImagesRequestJSON
     }
-    
+
     public func requestFile(with id: String, nodeId: String) async throws -> FileNodesResponse {
         guard let data = mockedFileRequestJSON.data(using: .utf8)
         else {

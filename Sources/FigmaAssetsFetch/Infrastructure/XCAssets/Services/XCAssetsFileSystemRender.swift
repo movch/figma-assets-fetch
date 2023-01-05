@@ -9,7 +9,7 @@ public struct XCAssetsFileSystemRender {
     private let fileManager: FileManagerType
     private let fileWriter: FileWriterType
     private let fileDownloader: FileDownloader
-    
+
     public init(
         fileManager: FileManagerType = FileManager.default,
         fileWriter: FileWriterType = FileWriter(),

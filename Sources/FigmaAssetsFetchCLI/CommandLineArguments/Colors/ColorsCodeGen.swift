@@ -1,7 +1,7 @@
 import ArgumentParser
 import Darwin
-import Foundation
 import FigmaAssetsFetch
+import Foundation
 
 struct ColorsCodeGen: ParsableCommand {
     static var configuration = CommandConfiguration(

@@ -19,9 +19,13 @@ class FigmaColorsSourceTests: XCTestCase {
         assert(colors.count == 5)
         assert(
             colors
-                .map { $0.name.snakeCased }.sorted() == ["bg_danger", "bg_info", "bg_primary", "bg_secondary", "bg_success"].sorted()
+                .map { $0.name.snakeCased }
+                .sorted() == ["bg_danger", "bg_info", "bg_primary", "bg_secondary", "bg_success"].sorted()
         )
         assert(colors.map { $0.value.hexValue }.sorted() == ["DC3545", "17A2B8", "007BFF", "6C757D", "28A745"].sorted())
-        assert(colors.map { $0.darkValue?.hexValue ?? "" }.sorted() == ["DC3545", "17A2B8", "007BFF", "6C757D", "28A745"].sorted())
+        assert(
+            colors.map { $0.darkValue?.hexValue ?? "" }
+                .sorted() == ["DC3545", "17A2B8", "007BFF", "6C757D", "28A745"].sorted()
+        )
     }
 }

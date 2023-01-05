@@ -1,7 +1,7 @@
 import ArgumentParser
 import Darwin
-import Foundation
 import FigmaAssetsFetch
+import Foundation
 
 struct ImagesXCAssets: ParsableCommand {
     static var configuration = CommandConfiguration(
@@ -10,12 +10,11 @@ struct ImagesXCAssets: ParsableCommand {
 
     @OptionGroup
     var options: Options
-    
+
     @Option(
         help: "Figma frame url that contains a collection of images."
     )
     var imagesNodeURL: String = ""
-
 
     func run() {
         let source = FigmaImagesSource(

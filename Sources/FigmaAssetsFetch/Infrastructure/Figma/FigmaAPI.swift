@@ -2,7 +2,8 @@ import Foundation
 
 public protocol FigmaAPIType {
     func requestFile(with id: String, nodeId: String) async throws -> FileNodesResponse
-    func requestImagesLinks(fileId: String, nodeIds: [String], format: ImageFormat, scale: ImageScale) async throws -> FigmaImages
+    func requestImagesLinks(fileId: String, nodeIds: [String], format: ImageFormat, scale: ImageScale) async throws
+        -> FigmaImages
 }
 
 public struct FigmaAPI: HasHTTPRequest {

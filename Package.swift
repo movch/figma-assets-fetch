@@ -18,7 +18,8 @@ let package = Package(
             name: "FigmaAssetsFetch",
             dependencies: [
                 .product(name: "Stencil", package: "Stencil"),
-            ]),
+            ]
+        ),
         .executableTarget(
             name: "FigmaAssetsFetchCLI",
             dependencies: [
