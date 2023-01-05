@@ -10,6 +10,9 @@ extension HasHTTPRequest {
         urlComponents.scheme = endpoint.scheme
         urlComponents.host = endpoint.host
         urlComponents.path = endpoint.path
+        if let queryItems = endpoint.queryItems {
+            urlComponents.queryItems = queryItems
+        }
 
         guard let url = urlComponents.url else {
             throw RequestError.invalidURL
@@ -23,24 +26,20 @@ extension HasHTTPRequest {
             request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         }
 
-        do {
-            let (data, response) = try await URLSession.shared.data(for: request, delegate: nil)
-            guard let response = response as? HTTPURLResponse else {
-                throw RequestError.noResponse
+        let (data, response) = try await URLSession.shared.data(for: request, delegate: nil)
+        guard let response = response as? HTTPURLResponse else {
+            throw RequestError.noResponse
+        }
+        switch response.statusCode {
+        case 200 ... 299:
+            guard let decodedResponse = try? JSONDecoder().decode(responseModel, from: data) else {
+                throw RequestError.decode
             }
-            switch response.statusCode {
-            case 200 ... 299:
-                guard let decodedResponse = try? JSONDecoder().decode(responseModel, from: data) else {
-                    throw RequestError.decode
-                }
-                return decodedResponse
-            case 401:
-                throw RequestError.unauthorized
-            default:
-                throw RequestError.unexpectedStatusCode
-            }
-        } catch {
-            throw RequestError.unknown
+            return decodedResponse
+        case 401:
+            throw RequestError.unauthorized
+        default:
+            throw RequestError.unexpectedStatusCode
         }
     }
 }
