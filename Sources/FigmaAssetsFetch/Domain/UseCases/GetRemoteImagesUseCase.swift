@@ -11,6 +11,6 @@ public struct GetRemoteImagesUseCase {
 
     public func run() async throws {
         let images = try await source.fetchImages()
-        try render.render(images: images, output: output)
+        try await render.render(images: images, output: output)
     }
 }

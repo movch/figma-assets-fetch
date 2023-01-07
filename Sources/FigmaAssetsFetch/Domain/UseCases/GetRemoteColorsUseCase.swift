@@ -13,6 +13,6 @@ public struct GetRemoteColorsUseCase {
 
     public func run() async throws {
         let colorAssets = try await source.fetchColors()
-        try render.render(colors: colorAssets, output: output)
+        try await render.render(colors: colorAssets, output: output)
     }
 }

@@ -5,17 +5,9 @@ public enum FileDownloaderError: Error {
 }
 
 public protocol FileDownloader {
-    func download(from url: URL, to output: URL) throws
+    func download(from url: URL, to output: URL) async throws
 }
 
-public struct NSDataFileDownloader: FileDownloader {
+public struct AsyncFileDownloader: FileDownloader, HasHTTPRequest {
     public init() {}
-
-    public func download(from url: URL, to output: URL) throws {
-        guard let data = NSData(contentsOf: url) else {
-            throw FileDownloaderError.invalidFileURL
-        }
-
-        try data.write(to: output)
-    }
 }

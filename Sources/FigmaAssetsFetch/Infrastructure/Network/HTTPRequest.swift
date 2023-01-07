@@ -1,10 +1,11 @@
 import Foundation
 
-protocol HasHTTPRequest {
+public protocol HasHTTPRequest {
     func sendRequest<T: Decodable>(endpoint: Endpoint, responseModel: T.Type) async throws -> T
+    func download(from url: URL, to output: URL) async throws
 }
 
-extension HasHTTPRequest {
+public extension HasHTTPRequest {
     func sendRequest<T: Decodable>(endpoint: Endpoint, responseModel: T.Type) async throws -> T {
         var urlComponents = URLComponents()
         urlComponents.scheme = endpoint.scheme
@@ -41,5 +42,15 @@ extension HasHTTPRequest {
         default:
             throw RequestError.unexpectedStatusCode
         }
+    }
+    
+    func download(from url: URL, to output: URL) async throws {
+        let (data, response) = try await URLSession.shared.data(from: url, delegate: nil)
+        
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw RequestError.unexpectedStatusCode
+        }
+        
+        try data.write(to: output)
     }
 }

@@ -11,15 +11,15 @@ public struct FigmaEndpoint {
 }
 
 extension FigmaEndpoint: Endpoint {
-    var scheme: String {
+    public var scheme: String {
         "https"
     }
 
-    var host: String {
+    public var host: String {
         "api.figma.com"
     }
 
-    var path: String {
+    public var path: String {
         switch request {
         case let .node(fileId, _):
             return "/v1/files/\(fileId)/nodes"
@@ -28,7 +28,7 @@ extension FigmaEndpoint: Endpoint {
         }
     }
 
-    var queryItems: [URLQueryItem]? {
+    public var queryItems: [URLQueryItem]? {
         switch request {
         case let .node(_, nodeId):
             return [
@@ -44,7 +44,7 @@ extension FigmaEndpoint: Endpoint {
         }
     }
 
-    var method: RequestMethod {
+    public var method: RequestMethod {
         switch request {
         case .node:
             return .get
@@ -53,14 +53,14 @@ extension FigmaEndpoint: Endpoint {
         }
     }
 
-    var header: [String: String]? {
+    public var header: [String: String]? {
         [
             "X-Figma-Token": token,
             "Content-Type": "application/json;charset=utf-8",
         ]
     }
 
-    var body: [String: String]? {
+    public var body: [String: String]? {
         nil
     }
 }

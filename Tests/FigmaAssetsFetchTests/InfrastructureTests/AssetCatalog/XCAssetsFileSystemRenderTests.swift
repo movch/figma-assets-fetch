@@ -3,7 +3,7 @@ import XCTest
 @testable import FigmaAssetsFetch
 
 class XCAssetsFileSystemRenderTests: XCTestCase {
-    func testXCAssetsColorSetFilePathGeneration() throws {
+    func testXCAssetsColorSetFilePathGeneration() async throws {
         let mockFileManager = FileManagerMock()
         let mockFileWriter = FileWriterMock()
 
@@ -16,7 +16,8 @@ class XCAssetsFileSystemRenderTests: XCTestCase {
             fileManager: mockFileManager,
             fileWriter: mockFileWriter
         )
-        try render.render(colors: parsedColors, output: "/Test.xcassets")
+
+        try await render.render(colors: parsedColors, output: "/Test.xcassets")
 
         assert(mockFileManager.paths.sorted() == [
             "/Test.xcassets",
@@ -36,7 +37,7 @@ class XCAssetsFileSystemRenderTests: XCTestCase {
         ].sorted())
     }
 
-    func testXCAssetsImageSetFilePathGeneration() throws {
+    func testXCAssetsImageSetFilePathGeneration() async throws {
         let mockFileManager = FileManagerMock()
         let mockFileWriter = FileWriterMock()
         let mockFileDownloader = FileDownloaderMock()
@@ -54,7 +55,8 @@ class XCAssetsFileSystemRenderTests: XCTestCase {
             fileWriter: mockFileWriter,
             fileDownloader: mockFileDownloader
         )
-        try render.render(images: images, output: "/Images.xcassets")
+
+        try await render.render(images: images, output: "/Images.xcassets")
 
         assert(mockFileManager.paths.sorted() == [
             "/Images.xcassets",
