@@ -2,7 +2,21 @@ import FigmaAssetsFetch
 import Foundation
 
 public class FileManagerMock {
-    public var paths: [String] = []
+    public var paths: [String] {
+        return queue.sync {
+            self.safePaths
+        }
+    }
+    
+    let queue = DispatchQueue(
+        label: "cc.ovchinnikov.\(UUID().uuidString)",
+        qos: .background,
+        attributes: .concurrent,
+        autoreleaseFrequency: .inherit,
+        target: .global()
+    )
+    
+    private var safePaths: [String] = []
 
     public init() {}
 }
@@ -13,6 +27,8 @@ extension FileManagerMock: FileManagerType {
         withIntermediateDirectories createIntermediates: Bool,
         attributes: [FileAttributeKey: Any]?
     ) throws {
-        paths.append(path)
+        queue.async(flags: .barrier) {
+            self.safePaths.append(path)
+        }
     }
 }

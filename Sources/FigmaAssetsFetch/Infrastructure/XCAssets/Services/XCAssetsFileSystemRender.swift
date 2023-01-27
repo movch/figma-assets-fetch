@@ -21,7 +21,7 @@ public struct XCAssetsFileSystemRender {
     }
 
     public func render(assets: [XCAssets.Asset], outputURL: URL) async throws {
-        for asset in assets {
+        try await assets.concurrentForEach(withPriority: .high) { asset in
             switch asset {
             case let .colorSet(name, colorSet):
                 let colorSetURL = outputURL.appendingPathComponent("\(name).colorset")
