@@ -1,17 +1,9 @@
-import Combine
 import XCTest
 
 @testable import FigmaAssetsFetch
 
 class GetRemoteColorsUseCaseTests: XCTestCase {
-    private var cancellables: Set<AnyCancellable>!
-
-    override func setUp() {
-        super.setUp()
-        cancellables = []
-    }
-
-    func testGetColorsAndRenderToXCAssets() throws {
+    func testGetColorsAndRenderToXCAssets() async throws {
         let figmaAPIMock = FigmaAPIMock(
             mockedFileRequestJSON: FigmaJSON.examplePalleteWithStyles,
             mockedImagesRequestJSON: ""
@@ -34,28 +26,7 @@ class GetRemoteColorsUseCaseTests: XCTestCase {
             output: "/Test.xcassets"
         )
 
-        var error: Error?
-        let expectation = self.expectation(description: "Figma colors source mock")
-
-        useCase.run()
-            .sink(
-                receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        break
-                    case let .failure(encounteredError):
-                        error = encounteredError
-                    }
-
-                    expectation.fulfill()
-                },
-                receiveValue: { _ in }
-            )
-            .store(in: &cancellables)
-
-        waitForExpectations(timeout: 10)
-
-        XCTAssertNil(error)
+        try await useCase.run()
 
         assert(mockFileManager.paths.sorted() == [
             "/Test.xcassets",
@@ -75,7 +46,7 @@ class GetRemoteColorsUseCaseTests: XCTestCase {
         ].sorted())
     }
 
-    func testGetColorsAndRenderToStencilTemplate() throws {
+    func testGetColorsAndRenderToStencilTemplate() async throws {
         let figmaAPIMock = FigmaAPIMock(
             mockedFileRequestJSON: FigmaJSON.examplePalleteWithStyles,
             mockedImagesRequestJSON: FigmaJSON.exampleImagesResponse
@@ -97,28 +68,7 @@ class GetRemoteColorsUseCaseTests: XCTestCase {
             output: "/Test.swift"
         )
 
-        var error: Error?
-        let expectation = self.expectation(description: "Figma colors source mock")
-
-        useCase.run()
-            .sink(
-                receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        break
-                    case let .failure(encounteredError):
-                        error = encounteredError
-                    }
-
-                    expectation.fulfill()
-                },
-                receiveValue: { _ in }
-            )
-            .store(in: &cancellables)
-
-        waitForExpectations(timeout: 10)
-
-        XCTAssertNil(error)
+        try await useCase.run()
 
         assert(mockFileWriter.paths == ["/Test.swift"])
         assert(

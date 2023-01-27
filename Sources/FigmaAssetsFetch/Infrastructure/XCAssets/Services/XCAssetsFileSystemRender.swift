@@ -6,22 +6,22 @@ public enum XCAssetsFileSystemRenderError: Error {
 }
 
 public struct XCAssetsFileSystemRender {
+    private let fileManager: FileManagerType
+    private let fileWriter: FileWriterType
+    private let fileDownloader: FileDownloader
+
     public init(
         fileManager: FileManagerType = FileManager.default,
         fileWriter: FileWriterType = FileWriter(),
-        fileDownloader: FileDownloader = NSDataFileDownloader()
+        fileDownloader: FileDownloader = AsyncFileDownloader()
     ) {
         self.fileManager = fileManager
         self.fileWriter = fileWriter
         self.fileDownloader = fileDownloader
     }
 
-    private let fileManager: FileManagerType
-    private let fileWriter: FileWriterType
-    private let fileDownloader: FileDownloader
-
-    public func render(assets: [XCAssets.Asset], outputURL: URL) throws {
-        for asset in assets {
+    public func render(assets: [XCAssets.Asset], outputURL: URL) async throws {
+        try await assets.concurrentForEach(withPriority: .high) { asset in
             switch asset {
             case let .colorSet(name, colorSet):
                 let colorSetURL = outputURL.appendingPathComponent("\(name).colorset")
@@ -29,7 +29,7 @@ public struct XCAssetsFileSystemRender {
 
             case let .imageSet(name, imageSet):
                 let imageSetURL = outputURL.appendingPathComponent("\(name).imageset")
-                try create(imageSet: imageSet, at: imageSetURL)
+                try await create(imageSet: imageSet, at: imageSetURL)
             }
         }
     }
@@ -67,7 +67,7 @@ public struct XCAssetsFileSystemRender {
         try fileWriter.write(content: colorSetInfoContent, at: colorSetInfoURL)
     }
 
-    private func create(imageSet: XCImageSet, at pathURL: URL) throws {
+    private func create(imageSet: XCImageSet, at pathURL: URL) async throws {
         try fileManager.createDirectory(
             atPath: pathURL.path,
             withIntermediateDirectories: true,
@@ -86,7 +86,7 @@ public struct XCAssetsFileSystemRender {
                 throw XCAssetsFileSystemRenderError.invalidImageURL
             }
 
-            try fileDownloader.download(
+            try await fileDownloader.download(
                 from: imageURL,
                 to: pathURL.appendingPathComponent(image.filename)
             )
@@ -97,7 +97,7 @@ public struct XCAssetsFileSystemRender {
 }
 
 extension XCAssetsFileSystemRender: ColorsRender {
-    public func render(colors: [ColorAsset], output: String) throws {
+    public func render(colors: [ColorAsset], output: String) async throws {
         guard let outputURL = URL(string: "file://\(output)"),
               outputURL.lastPathComponent.contains(".xcassets")
         else {
@@ -115,12 +115,12 @@ extension XCAssetsFileSystemRender: ColorsRender {
         }
 
         try createAssetFolder(url: outputURL)
-        try render(assets: xcAssets, outputURL: outputURL)
+        try await render(assets: xcAssets, outputURL: outputURL)
     }
 }
 
 extension XCAssetsFileSystemRender: ImagesRender {
-    public func render(images: [ImageAsset], output: String) throws {
+    public func render(images: [ImageAsset], output: String) async throws {
         guard let outputURL = URL(string: "file://\(output)"),
               outputURL.lastPathComponent.contains(".xcassets")
         else {
@@ -135,6 +135,6 @@ extension XCAssetsFileSystemRender: ImagesRender {
         }
 
         try createAssetFolder(url: outputURL)
-        try render(assets: xcAssets, outputURL: outputURL)
+        try await render(assets: xcAssets, outputURL: outputURL)
     }
 }

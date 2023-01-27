@@ -1,17 +1,16 @@
-import Combine
-
 public struct GetRemoteImagesUseCase {
-    public let source: RemoteImagesSource
-    public let render: ImagesRender
+    let source: RemoteImagesSource
+    let render: ImagesRender
+    let output: String
 
-    public let output: String
+    public init(source: RemoteImagesSource, render: ImagesRender, output: String) {
+        self.source = source
+        self.render = render
+        self.output = output
+    }
 
-    func run() -> AnyPublisher<Void, Error> {
-        return source.fetchImages()
-            .tryMap { images in
-                try render.render(images: images, output: self.output)
-                return ()
-            }
-            .eraseToAnyPublisher()
+    public func run() async throws {
+        let images = try await source.fetchImages()
+        try await render.render(images: images, output: output)
     }
 }

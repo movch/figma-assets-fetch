@@ -1,6 +1,6 @@
 import ArgumentParser
-import Combine
 import Darwin
+import FigmaAssetsFetch
 import Foundation
 
 struct ColorsXCAssets: ParsableCommand {
@@ -28,25 +28,19 @@ struct ColorsXCAssets: ParsableCommand {
             output: options.output
         )
 
-        let cancellable = useCase.run()
-            .sink(
-                receiveCompletion: process(completion:),
-                receiveValue: { _ in }
-            )
+        let task = Task {
+            do {
+                try await useCase.run()
+                print("Done.")
+                Darwin.exit(0)
+            } catch {
+                print(error)
+                Darwin.exit(1)
+            }
+        }
 
         // Infinitely run the main loop to wait for our request.
         RunLoop.main.run()
-        withExtendedLifetime(cancellable) {}
-    }
-
-    private func process(completion: Subscribers.Completion<Error>) {
-        switch completion {
-        case let .failure(error):
-            print(error)
-            Darwin.exit(1)
-        case .finished:
-            print("Done.")
-            Darwin.exit(0)
-        }
+        withExtendedLifetime(task) {}
     }
 }

@@ -1,5 +1,3 @@
-import Combine
-
 public enum FigmaColorsSourceError: Error {
     case incorrectFigmaFrameURL
 }
@@ -26,42 +24,39 @@ public struct FigmaColorsSource: RemoteColorsSource {
         self.figmaPalleteParser = figmaPalleteParser
     }
 
-    public func fetchColors() -> AnyPublisher<[ColorAsset], Error> {
+    public func fetchColors() async throws -> [ColorAsset] {
         guard let figmaFileId = try? figmaURLParser.extractFileId(from: colorsURLPath),
               let colorsNodeId = try? figmaURLParser.extractNodeId(from: colorsURLPath)
         else {
-            return Fail(error: FigmaColorsSourceError.incorrectFigmaFrameURL)
-                .eraseToAnyPublisher()
+            throw FigmaColorsSourceError.incorrectFigmaFrameURL
         }
 
-        let colorsRequest = figmaAPI.requestFile(with: figmaFileId, nodeId: colorsNodeId)
-        let darkColorsRequest: AnyPublisher<FileNodesResponse, Error> = {
+        async let colorsFigmaNodes: FileNodesResponse = try figmaAPI.requestFile(
+            with: figmaFileId,
+            nodeId: colorsNodeId
+        )
+        async let darkColorsFigmaNodes: FileNodesResponse = {
             guard let darkColorsNodeURL = self.darkColorsURLPath,
                   let darkColorsFileId = try? figmaURLParser.extractFileId(from: darkColorsNodeURL),
                   let darkColorsNodeId = try? figmaURLParser.extractNodeId(from: darkColorsNodeURL)
             else {
-                return Just(FileNodesResponse(nodes: [:], name: ""))
-                    .setFailureType(to: Error.self)
-                    .eraseToAnyPublisher()
+                return FileNodesResponse(nodes: [:], name: "")
             }
 
-            return figmaAPI.requestFile(with: darkColorsFileId, nodeId: darkColorsNodeId)
+            return try await figmaAPI.requestFile(with: darkColorsFileId, nodeId: darkColorsNodeId)
         }()
 
-        return Publishers.Zip(colorsRequest, darkColorsRequest)
-            .tryMap { colorsFigmaNodes, darkColorsFigmaNodes in
-                let namedColors = try figmaPalleteParser.extract(figmaNodes: colorsFigmaNodes)
-                let darkNamedColors = (try? figmaPalleteParser.extract(figmaNodes: darkColorsFigmaNodes)) ?? []
-                return namedColors.map { namedColor in
-                    ColorAsset(
-                        name: namedColor.name,
-                        value: namedColor.value,
-                        darkValue: darkNamedColors.first(where: { darkNamedColor in
-                            darkNamedColor.name.original.contains(namedColor.name.original)
-                        })?.value
-                    )
-                }
-            }
-            .eraseToAnyPublisher()
+        let namedColors = try await figmaPalleteParser.extract(figmaNodes: colorsFigmaNodes)
+        let darkNamedColors = (try? await figmaPalleteParser.extract(figmaNodes: darkColorsFigmaNodes)) ?? []
+
+        return namedColors.map { namedColor in
+            ColorAsset(
+                name: namedColor.name,
+                value: namedColor.value,
+                darkValue: darkNamedColors.first(where: { darkNamedColor in
+                    darkNamedColor.name.original.contains(namedColor.name.original)
+                })?.value
+            )
+        }
     }
 }
