@@ -11,7 +11,7 @@ extension Sequence {
                     try await operation(element)
                 }
             }
-            
+
             // Propagate any errors thrown by the group's tasks:
             for try await _ in group {}
         }

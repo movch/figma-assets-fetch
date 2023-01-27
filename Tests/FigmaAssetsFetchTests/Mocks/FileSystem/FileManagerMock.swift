@@ -7,7 +7,7 @@ public class FileManagerMock {
             self.safePaths
         }
     }
-    
+
     let queue = DispatchQueue(
         label: "cc.ovchinnikov.\(UUID().uuidString)",
         qos: .background,
@@ -15,7 +15,7 @@ public class FileManagerMock {
         autoreleaseFrequency: .inherit,
         target: .global()
     )
-    
+
     private var safePaths: [String] = []
 
     public init() {}

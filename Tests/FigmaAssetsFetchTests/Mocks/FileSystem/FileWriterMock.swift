@@ -7,13 +7,13 @@ public class FileWriterMock {
             self.safePaths
         }
     }
-    
+
     public var contents: [String?] {
         return queue.sync {
             self.safeContents
         }
     }
-    
+
     let queue = DispatchQueue(
         label: "cc.ovchinnikov.\(UUID().uuidString)",
         qos: .background,
@@ -21,7 +21,7 @@ public class FileWriterMock {
         autoreleaseFrequency: .inherit,
         target: .global()
     )
-    
+
     private var safePaths: [String] = []
     private var safeContents: [String?] = []
 

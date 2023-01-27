@@ -43,14 +43,14 @@ public extension HasHTTPRequest {
             throw RequestError.unexpectedStatusCode
         }
     }
-    
+
     func download(from url: URL, to output: URL) async throws {
         let (data, response) = try await URLSession.shared.data(from: url, delegate: nil)
-        
+
         guard (response as? HTTPURLResponse)?.statusCode == 200 else {
             throw RequestError.unexpectedStatusCode
         }
-        
+
         try data.write(to: output)
     }
 }
